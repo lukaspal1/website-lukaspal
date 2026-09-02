@@ -1,0 +1,657 @@
+/* ============================================================
+   Lukas Palubiski — pixel nature theme
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root{
+  /* palette */
+  --forest-dark:#12261B;
+  --forest:#1B4332;
+  --moss:#2D6A4F;
+  --sage:#74A57F;
+  --leaf:#95D5B2;
+  --parchment:#F1EFDC;
+  --parchment-alt:#E8E4CC;
+  --bark:#43301F;
+  --bark-light:#6B4E32;
+  --amber:#D9A441;
+  --ink:#22301F;
+
+  --pixel-border: 3px;
+  --max-width: 900px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'VT323', monospace;
+  font-size:19px;
+  color:var(--ink);
+  background:var(--forest-dark);
+  cursor: url('World of Warcraft Pixel Cursor--cursor--SweezyCursors.png'), auto;
+}
+a, button {
+    cursor: url('World of Warcraft Pixel Cursor--pointer--SweezyCursors.png'), pointer;
+}
+
+
+/* Retro gaming style hover */
+h1, h2, h3 {
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+h1:hover, h2:hover, h3:hover {
+    color: var(--amber);
+    transform: translateY(-2px);
+}
+
+/* Pixel scanline overlay on hover */
+h1:hover::after, h2:hover::after, h3:hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0) 0px,
+        rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.05) 2px,
+        rgba(0,0,0,0.05) 4px
+    );
+    pointer-events: none;
+    animation: scanline 0.5s linear infinite;
+}
+
+@keyframes scanline {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 4px; }
+}
+
+
+.knight-pose-btn {
+  margin-top: 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  background: var(--forest);
+  color: var(--parchment);
+  border: 2px solid var(--bark);
+  padding: 8px 12px;
+  cursor: url('World of Warcraft Pixel Cursor--pointer--SweezyCursors.png'), pointer;
+}
+.knight-pose-btn:hover {
+  background: var(--amber);
+  color: var(--bark);
+}
+/* ============================================================
+   FIXED BACKGROUND CANVAS
+   Stays put while the page (block panel) scrolls over it.
+   Rendered at low internal resolution + image-rendering:pixelated
+   so everything drawn on it comes out chunky/8-bit automatically.
+   ============================================================ */
+#bg-canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  z-index:-1;
+  display:block;
+  image-rendering:pixelated;
+  image-rendering:-moz-crisp-edges;
+  image-rendering:crisp-edges;
+}
+#npc-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10; /* Higher than your parchment block */
+  pointer-events: none; /* Allows you to click links "through" the canvas */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* ============================================================
+   DAY/NIGHT TOGGLE BUTTON
+   ============================================================ */
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--forest);
+  border: 2px solid var(--bark);
+  color: var(--parchment);
+  font-size: 20px;
+  padding: 4px 10px;
+  cursor: url('World of Warcraft Pixel Cursor--pointer--SweezyCursors.png'), pointer;
+  transition: all 0.3s ease;
+  line-height: 1.4;
+  font-family: 'Press Start 2P', monospace;
+  box-shadow: 0 4px 0 var(--bark);
+  transform: translateY(-2px);
+}
+
+.theme-toggle:hover {
+  background: var(--amber);
+  color: var(--bark);
+  transform: translateY(0px);
+  box-shadow: 0 2px 0 var(--bark);
+}
+
+.theme-toggle:active {
+  transform: translateY(2px);
+  box-shadow: 0 0px 0 var(--bark);
+}
+
+/* Adjust header-inner to accommodate the button */
+.header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+/* On small screens, stack header items */
+@media (max-width: 640px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .social-links {
+    justify-content: center;
+  }
+  .theme-toggle {
+    align-self: center;
+  }
+}
+
+
+/* ============================================================
+   HEADINGS / PIXEL FONT
+   ============================================================ */
+h1, h2, h3,
+.site-name,
+#main-nav a,
+.social-links a,
+.entry-tag{
+  font-family:'Press Start 2P', monospace;
+  text-transform:uppercase;
+  letter-spacing:.02em;
+}
+
+a{
+  color:var(--moss);
+}
+a:hover{
+  color:var(--amber);
+}
+
+/* ============================================================
+   THE "BLOCK" — header, main, footer form one continuous
+   parchment panel, framed by the animated background on all sides.
+   ============================================================ */
+#site-header,
+main,
+#site-footer{
+  max-width:var(--max-width);
+  margin:0 auto;
+  background:var(--parchment);
+  border-left:var(--pixel-border) solid var(--bark);
+  border-right:var(--pixel-border) solid var(--bark);
+  padding-left:32px;
+  padding-right:32px;
+}
+
+body{
+  padding:40px 16px;
+}
+
+/* Pixel-notch corners on the very top of the header ... */
+#site-header{
+  border-top:var(--pixel-border) solid var(--bark);
+  padding-top:12px;
+  padding-bottom:8px;
+  clip-path:polygon(
+    0 12px, 12px 12px, 12px 0,
+    calc(100% - 12px) 0, calc(100% - 12px) 12px, 100% 12px,
+    100% 100%,
+    0 100%
+  );
+}
+
+/* ...and the very bottom of the footer */
+#site-footer{
+  border-bottom:var(--pixel-border) solid var(--bark);
+  padding-top:24px;
+  padding-bottom:24px;
+  text-align:center;
+  clip-path:polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 12px), calc(100% - 12px) calc(100% - 12px), calc(100% - 12px) 100%,
+    12px 100%, 12px calc(100% - 12px), 0 calc(100% - 12px)
+  );
+}
+
+#site-footer p{
+  margin:0;
+  font-size:14px;
+  color:var(--bark-light);
+}
+
+/* ============================================================
+   HEADER / NAV
+   ============================================================ */
+.header-inner{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:16px;
+}
+
+.site-name{
+  font-size:14px;
+  color:var(--forest);
+  text-decoration:none;
+}
+.site-name:hover{
+  color:var(--amber);
+}
+
+#main-nav ul{
+  list-style:none;
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+  margin:0;
+  padding:0;
+}
+#main-nav a{
+  font-size:9px;
+  text-decoration:none;
+  color:var(--forest);
+  padding:6px 8px;
+  border:2px solid transparent;
+}
+#main-nav a:hover{
+  color:var(--parchment);
+  background:var(--moss);
+  border-color:var(--bark);
+}
+#main-nav a.active{
+  color:var(--parchment);
+  background:var(--forest);
+  border-color:var(--bark);
+}
+
+.social-links{
+  list-style:none;
+  display:flex;
+  gap:8px;
+  margin:0;
+  padding:0;
+}
+.social-links a{
+  font-size:9px;
+  text-decoration:none;
+  color:var(--parchment);
+  background:var(--forest);
+  border:2px solid var(--bark);
+  padding:6px 10px;
+  display:inline-block;
+}
+.social-links a:hover{
+  background:var(--amber);
+  color:var(--bark);
+}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.section{
+  padding:18px 0;
+  border-bottom:2px dashed var(--sage);
+}
+.section:last-of-type{
+  border-bottom:none;
+}
+
+.section-inner{
+  max-width:100%;
+}
+
+.section-title{
+  font-size:14px;
+  color:var(--forest);
+  margin:0 0 20px;
+  padding-bottom:8px;
+  border-bottom:var(--pixel-border) solid var(--moss);
+  display:inline-block;
+}
+
+/* ---- hero ---- */
+.hero-section{
+  text-align:center;
+  border-bottom:2px dashed var(--sage);
+}
+.hero-name{
+  font-size:18px;
+  color:var(--forest);
+  margin:0 0 12px;
+  line-height:1.5;
+}
+.hero-tagline{
+  font-size:20px;
+  color:var(--moss);
+  margin:0 0 8px;
+}
+.hero-location,
+.hero-meta{
+  font-size:16px;
+  color:var(--bark-light);
+  margin:0 0 4px;
+}
+.hero-contact{
+  font-size:18px;
+  margin:12px 0 0;
+}
+/* ============================================================
+   HERO LAYOUT - TEXT + IMAGE SIDE BY SIDE
+   ============================================================ */
+
+.hero-layout {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding: 10px 0;
+}
+
+/* Left side - text content */
+.hero-text {
+    flex: 1;
+    min-width: 0;
+    text-align: left; /* Override the center alignment from hero-section */
+}
+
+/* Right side - profile image */
+.hero-image {
+    flex: 0 0 200px; /* Fixed width */
+    text-align: center;
+}
+
+/* Profile Image - Pixel Style to match your theme */
+.profile-image {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px; /* Square with rounded corners */
+    object-fit: cover;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    border: 3px solid var(--moss);
+    box-shadow: 
+        0 0 30px rgba(45, 106, 79, 0.25),
+        inset 0 0 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: url('World of Warcraft Pixel Cursor--pointer--SweezyCursors.png'), pointer;
+
+}
+
+.profile-image:hover {
+    transform: scale(1.03) rotate(-2deg);
+    box-shadow: 
+        0 0 50px rgba(45, 106, 79, 0.4),
+        inset 0 0 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Pixel-style decorative frame option (adds that retro feel) */
+.profile-image-wrapper {
+    position: relative;
+    padding: 4px;
+    background: var(--forest);
+    border-radius: 14px;
+    box-shadow: 
+        0 0 30px rgba(45, 106, 79, 0.2),
+        inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.profile-image-wrapper .profile-image {
+    border: 2px solid var(--parchment);
+    box-shadow: none;
+}
+/* Lightbox Modal Styles */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1000; /* High z-index to sit above your canvas */
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0, 0, 0, 0.85); /* Dark background */
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+}
+
+.modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  border-radius: 12px;
+  border: 3px solid var(--parchment); /* Matches your theme */
+  box-shadow: 0 0 50px rgba(45, 106, 79, 0.6);
+
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 35px;
+  color: var(--parchment);
+  font-size: 40px;
+  font-weight: bold;
+  cursor: url('World of Warcraft Pixel Cursor--pointer--SweezyCursors.png'), pointer;
+  z-index: 1001;
+}
+
+.close:hover, .close:focus {
+  color: var(--moss);
+  text-decoration: none;
+  cursor: url('World of Warcraft Pixel Cursor--pointer--SweezyCursors.png'), pointer;
+}
+
+#caption {
+  margin: 15px auto;
+  text-align: center;
+  color: var(--parchment);
+  font-family: sans-serif;
+    cursor: url('World of Warcraft Pixel Cursor--cursor--SweezyCursors.png'), pointer;
+
+}
+
+/* Mobile responsiveness */
+@media only screen and (max-width: 700px){
+  .modal-content {
+    width: 95%;
+  }
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE - Stack on small screens
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .hero-layout {
+        flex-direction: column-reverse; /* Image on top, text below */
+        gap: 25px;
+        text-align: center;
+    }
+    
+    .hero-text {
+        text-align: center; /* Center text on mobile */
+    }
+    
+    .hero-image {
+        flex: 0 0 auto;
+        width: 180px;
+        margin: 0 auto;
+    }
+    
+    .profile-image {
+        max-width: 180px;
+    }
+}
+/* ---- entries (education / experience / projects) ---- */
+.entry{
+  margin-bottom:16px;
+  padding:16px;
+  background:var(--parchment-alt);
+  border:2px solid var(--sage);
+
+
+}
+.entry:last-child{
+  margin-bottom:0;
+}
+
+.entry-header{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:8px;
+}
+.entry-title{
+  font-size:12px;
+  color:var(--forest);
+  margin:0;
+}
+.entry-tag{
+  display:block;
+  font-size:9px;
+  color:var(--moss);
+  margin-top:6px;
+}
+.entry-location,
+.entry-dates{
+  font-size:15px;
+  color:var(--bark-light);
+  white-space:nowrap;
+}
+.entry-link{
+  font-size:9px;
+  font-family:'Press Start 2P', monospace;
+  text-decoration:none;
+  color:var(--parchment);
+  background:var(--forest);
+  border:2px solid var(--bark);
+  padding:5px 8px;
+  white-space:nowrap;
+}
+.entry-link:hover{
+  background:var(--amber);
+  color:var(--bark);
+}
+
+.entry-subheader{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:4px;
+}
+.entry-role{
+  font-style:italic;
+  color:var(--moss);
+}
+
+.entry-details{
+  margin:10px 0 0;
+  padding-left:20px;
+}
+.entry-details li{
+  margin-bottom:6px;
+  line-height:1.5;
+}
+.entry-details code{
+  background:var(--forest);
+  color:var(--leaf);
+  padding:1px 5px;
+  font-size:14px;
+}
+
+/* ---- skills ---- */
+.skills-list{
+  margin:0;
+}
+.skills-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 12px;
+  padding:10px 0;
+  border-bottom:1px dotted var(--sage);
+}
+.skills-row:last-child{
+  border-bottom:none;
+}
+.skills-row dt{
+  font-family:'Press Start 2P', monospace;
+  font-size:10px;
+  color:var(--forest);
+  min-width:180px;
+}
+.skills-row dd{
+  margin:0;
+  color:var(--ink);
+}
+
+/* ---- accomplishments ---- */
+.accomplishments-list{
+  margin:0;
+  padding-left:20px;
+}
+.accomplishments-list li{
+  margin-bottom:8px;
+  line-height:1.5;
+}
+
+/* ---- contact / footer section ---- */
+.contact-section{
+  text-align:center;
+}
+.footer-social-links{
+  justify-content:center;
+  margin-top:16px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:640px){
+  body{ padding:20px 8px; font-size:17px; }
+  #site-header, main, #site-footer{ padding-left:16px; padding-right:16px; }
+  .header-inner{ flex-direction:column; align-items:flex-start; }
+  .hero-name{ font-size:19px; }
+  .entry-header{ flex-direction:column; align-items:flex-start; }
+  .skills-row dt{ min-width:100%; }
+}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lukas Palubiski</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button id="theme-toggle" aria-label="Toggle day/night" class="theme-toggle">🌙</button>
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="npc-canvas"></canvas>
+
+  <header id="site-header">
+    <div class="header-inner">
+      <ul class="social-links">
+        <li><a href="https://linkedin.com/in/lukas-palubiski-417b95355/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/lukaspal1" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://www.instagram.com/lukaspalubiski.v2/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="top">
+    <section id="about" class="section hero-section">
+      <div class="section-inner">
+        <div class="hero-layout">
+          <div class="hero-text">
+            <h1 class="hero-name">Lukas Palubiski</h1>
+            <p class="hero-tagline"><b>About Me</b></p>
+            <p>
+              Hi, I'm Lukas. I like working with computers and overcoming challenges. 
+              I like to learn how things work and expand my knowledge. I own a small 
+              business called Lukas Palubiski Technical Services, and through my business 
+              have built a few websites. Coding I am most comfortable using html, css, and 
+              python, although I have a base in multiple languages for different systems.
+            </p>
+            <ul class="hero-details">
+              <li>I've lived in <b>Canada</b> for most of my life and recently moved to <b>Czechia</b> (2026)</li>
+              <li>I enjoy <b>bodybuilding</b>, and have been active in the gym since <b>2021</b></li>
+              <li>currently reading the <b>Horus Heresy</b> books, they are very good</li>
+              <li>I like to <b>golf</b>, although I'm not very good at it</li>
+              <li>I love to play <b><a href="https://steamcommunity.com/id/gluckymcdoodle/" target="_blank" rel="noopener noreferrer">video games</a></b> and my game of choice has been <b>Counter Strike</b> for a long time, hoping to hit Faceit level 10 soon</li>
+              <li>I used to do <b>gymnastics</b> as well as <b>trampoline</b> when I was younger, and competed at the <b>national</b> level</li>
+            </ul>
+          </div>
+          
+          <div class="hero-image">
+            <img 
+              id="profile-thumb"
+              src="Screenshot_20220113-093740_Instagram.jpg" 
+              alt="Lukas Palubiski - Profile Photo"
+              class="profile-image"
+              loading="lazy"
+            >
+            <br>
+            <!-- <button id="knight-pose-btn" class="knight-pose-btn">Pose Knight</button> -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="profile-modal" class="modal">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="modal-img">
+      <div id="caption">Click outside or press ESC to close</div>
+    </div>
+
+    <section id="education" class="section">
+      <div class="section-inner">
+        <h2 class="section-title">Education</h2>
+        <article class="entry">
+          <div class="entry-header">
+            <h3 class="entry-title">Wilfrid Laurier University</h3>
+            <span class="entry-location">Waterloo, ON, Canada</span>
+          </div>
+          <div class="entry-subheader">
+            <span class="entry-role">Honours Bachelor of Science (B.Sc.), Honours Computer Science</span>
+            <span class="entry-dates">Sept. 2022 – June 2026</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="experience" class="section">
+      <div class="section-inner">
+        <h2 class="section-title">Experience</h2>
+        <article class="entry">
+          <div class="entry-header">
+            <h3 class="entry-title">Founder &amp; Software Developer</h3>
+            <span class="entry-dates">July 2026 – Present</span>
+          </div>
+          <div class="entry-subheader">
+            <span class="entry-role">Lukas Palubiski Technical Services</span>
+            <span class="entry-location">Remote</span>
+          </div>
+          <ul class="entry-details client-list">
+            <li class="entry-subheader" style="font-weight: bold; color: var(--forest);">Client Projects</li>
+            <li class="entry-subheader">Great Lakes Carbide Supply <a class="entry-link" href="https://www.greatlakescarbidesupply.com" target="_blank">Website</a></li>
+            <li class="entry-subheader">Tooth and Nail Carpentry <a class="entry-link" href="https://www.toothandnailcarpentry.ca" target="_blank">Website</a></li>
+            <li class="entry-subheader">Weishar Carpentry<a class="entry-link" href="https://www.weisharcarpentry.ca" target="_blank">Website</a></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="section-inner">
+        <h2 class="section-title">Projects</h2>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">Multi-Client File Transfer System<span class="entry-tag">Computer Networks / Socket Programming</span></h3>
+            <a href="https://github.com/lukaspal1/Networks-Programming-Assignment" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details"><li>Built a multi-threaded <strong>TCP client-server application</strong> in Python using raw <strong>BSD sockets</strong>.</li></ul>
+        </article>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">Climate Tweet Sentiment Analysis<span class="entry-tag">Data Analysis</span></h3>
+            <a href="https://github.com/lukaspal1/Portfolio/blob/main/DataVisualization_A3.ipynb" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details"><li>Analyzed 2,000 climate tweets across 39 countries using <strong>Python (Pandas, Seaborn, Plotly)</strong>.</li></ul>
+        </article>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">BiteVerse<span class="entry-tag">Software Engineering</span></h3>
+            <a href="https://github.com/muchlogic/CP317-Final-Project" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details"><li>Full-stack recipe-sharing platform (<strong>JavaScript, HTML, Tailwind CSS</strong>).</li></ul>
+        </article>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">This Website<span class="entry-tag">Web Development</span></h3>
+            <a href="https://github.com/lukaspal1/Portfolio" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details"><li>Designed and implemented this personal portfolio website using <strong>HTML, CSS, and JavaScript</strong>.</li></ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="accomplishments" class="section">
+      <div class="section-inner">
+        <h2 class="section-title">Personal Accomplishments</h2>
+        <ul class="accomplishments-list">
+          <li>Represented Team Ontario Canada for Gymnastics and Trampoline for 6 years</li>
+          <li>Placed 13th at Canadian National Championships 2019 for Youth Trampoline</li>
+          <li>Ranked top 1000 NA in Counter Strike 2</li>
+          <li>Ranked top 10,000 NA in Valorant</li>
+          <li>Broke 100 in Golf (no mulligans nor foot wedges!)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact-section">
+      <div class="section-inner">
+        <h2 class="section-title">Get in Touch</h2>
+        <p><a href="mailto:lukas@palubiski.com">lukas@palubiski.com</a></p>
+        <ul class="social-links footer-social-links">
+          <li><a href="https://linkedin.com/in/lukas-palubiski-417b95355/" target="_blank">LinkedIn</a></li>
+          <li><a href="https://github.com/lukaspal1" target="_blank">GitHub</a></li>
+          <li><a href="https://www.instagram.com/lukaspalubiski.v2/" target="_blank">Instagram</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer">
+    <p>&copy; <span id="current-year"></span> Lukas Palubiski</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
