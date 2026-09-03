@@ -48,8 +48,8 @@
   smoke: '#C8C8C8'
 };
 
-  let palette = NIGHT_PALETTE;   // start at night
-  let isNight = true;
+  let palette = DAY_PALETTE;   // start at night
+  let isNight = false;
 
   // ------------------------------------------------------------
   // CONFIG
@@ -630,26 +630,25 @@ function drawNPC(time) {
   // ------------------------------------------------------------
   // DAY/NIGHT TOGGLE
   // ------------------------------------------------------------
-  function toggleDayNight() {
+    function toggleDayNight() {
     isNight = !isNight;
     palette = isNight ? NIGHT_PALETTE : DAY_PALETTE;
 
-    // Update tree colors to match new palette
     trees.forEach(tree => {
-      tree.colors = palette[tree.species];
+        tree.colors = palette[tree.species];
     });
 
-    // Update button icon
     const btn = document.getElementById('theme-toggle');
     if (btn) {
-      btn.textContent = isNight ? '🌙' : '☀️';
+        btn.textContent = isNight ? '🌙' : '☀️';
     }
 
-    // Clear sparks on toggle (optional)
     sparks = [];
     fireFlicker = 0;
-  }
 
+    // THIS LINE ACTIVATES THE DARK MODE CSS
+    document.body.classList.toggle('night-mode', isNight);
+}
   // ------------------------------------------------------------
   // WIRING
   // ------------------------------------------------------------

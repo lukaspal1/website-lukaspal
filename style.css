@@ -655,3 +655,59 @@ body{
   .entry-header{ flex-direction:column; align-items:flex-start; }
   .skills-row dt{ min-width:100%; }
 }
+
+/* ============================================================
+   NIGHT MODE OVERRIDES (Dark Mode)
+   ============================================================ */
+body.night-mode {
+  --parchment: #1E2A23;        /* Dark green/grey block background */
+  --parchment-alt: #15201A;    /* Darker inner box background */
+  --ink: #FFFFFF;              /* Normal text - White */
+  --forest: #74A57F;           /* Lighter green for buttons/accents (keeps background green) */
+  --moss: #95D5B2;             /* Lighter accents */
+  --sage: #4A6955;             /* Darker sage for borders */
+  --bark: #0F1A14;             /* Very dark brown/green for borders */
+  --bark-light: #9E8368;       /* Lightened brown for smaller text */
+  --amber: #FFD166;            /* Bright Yellow */
+  --leaf: #95D5B2;             /* Code text */
+}
+
+/* Make ALL Titles, Headers, and Sub-headers YELLOW */
+body.night-mode h1,
+body.night-mode h2,
+body.night-mode h3,
+body.night-mode .hero-name,
+body.night-mode .section-title,
+body.night-mode .entry-title,
+body.night-mode .hero-tagline,
+body.night-mode .entry-tag {
+  color: var(--amber);
+}
+
+/* Make social link backgrounds darker in night mode, keep yellow text */
+body.night-mode .social-links a {
+    background: #15201A; /* Darker green/black background */
+    color: var(--amber); /* Yellow text */
+    border-color: #0F1A14;
+}
+
+body.night-mode .social-links a:hover {
+    background: var(--amber);
+    color: #15201A;
+}
+
+/* Ensure the theme toggle button is ALWAYS on top (fixes mobile issue) */
+.theme-toggle {
+    z-index: 10000; /* Puts it above the header and content block */
+}
+/* Dark mode for entry links (Website, GitHub buttons) */
+body.night-mode .entry-link {
+    background: #15201A; /* Dark background to match social buttons */
+    color: var(--amber); /* Yellow text */
+    border-color: #0F1A14; /* Dark border */
+}
+
+body.night-mode .entry-link:hover {
+    background: var(--amber); /* Yellow background on hover */
+    color: #15201A; /* Dark text on hover */
+}
