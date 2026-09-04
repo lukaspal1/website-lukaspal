@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Memory Palace – Walkable Gallery</title>
+    <link rel="stylesheet" href="gallery_style.css" />
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading">
+        <div>🏛️ Memory Palace</div>
+        <span>loading gallery …</span>
+    </div>
+
+    <!-- Instruction (desktop) -->
+    <div id="instruction">
+        Click to lock mouse · WASD to walk · R to reset
+        <small>drag to look</small>
+    </div>
+
+    <!-- Mobile joystick -->
+    <div id="joystick-area">
+        <div id="joystick-knob"></div>
+    </div>
+    <div id="look-hint">↔ drag to look</div>
+
+    <!-- Import Map for Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- Main Application Script -->
+    <script type="module" src="gallery_script.js"></script>
+
+</body>
+</html>

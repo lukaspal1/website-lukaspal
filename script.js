@@ -766,16 +766,16 @@ const knightColors = {
   swordHandle: '#F59E0B', swordBlade: '#E5E7EB', boots: '#4B5563'
 };
 
-// Pose State
-let isPosing = false;
+// // Pose State
+// let isPosing = false;
 
-// Add click event to the new button to toggle the pose
-const knightPoseBtn = document.getElementById('knight-pose-btn');
-if (knightPoseBtn) {
-  knightPoseBtn.addEventListener('click', () => {
-    isPosing = !isPosing;
-  });
-}
+// // Add click event to the new button to toggle the pose
+// const knightPoseBtn = document.getElementById('knight-pose-btn');
+// if (knightPoseBtn) {
+//   knightPoseBtn.addEventListener('click', () => {
+//     isPosing = !isPosing;
+//   });
+// }
 
 // function knightFrame(time) {
 //   knightCtx.clearRect(0, 0, knightCanvas.width, knightCanvas.height);

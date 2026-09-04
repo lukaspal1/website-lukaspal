@@ -10,3 +10,15 @@ what I want on my website
         -instagram
     -pixelated
     
+
+gallery
+    -memory palace theme
+    -still pixelated like my home page
+    -marble
+    -"rooms"
+    -each room with a different theme
+    -lets say gaming
+        -like a marble museum with slots for pictures or "events"
+        -plaque with a description for pictures
+        -looks good while scrollable so I can have many pictures on one page
+    -first room in an entryway, will large pillars, then rooms that lead to the pictures

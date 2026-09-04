@@ -1,0 +1,145 @@
+/* Reset & fullscreen */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    overflow: hidden;
+    background: #161412;
+    font-family: Georgia, 'Times New Roman', serif;
+    touch-action: none;
+}
+canvas {
+    display: block;
+}
+
+/* Loading overlay */
+#loading {
+    position: fixed;
+    inset: 0;
+    background: #161412;
+    color: #E7E1D4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-family: Georgia, serif;
+    z-index: 100;
+    transition: opacity 1.2s ease;
+}
+#loading.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+#loading span {
+    margin-top: 1rem;
+    font-size: 1rem;
+    opacity: 0.6;
+    letter-spacing: 2px;
+}
+
+/* Instruction overlay (desktop) */
+#instruction {
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #E7E1D4;
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity 1s;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+}
+#instruction small {
+    display: block;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin-top: 4px;
+}
+@media (max-width: 600px) {
+    #instruction {
+        display: none;
+    }
+}
+
+/* Mobile joystick container */
+#joystick-area {
+    position: fixed;
+    bottom: 40px;
+    left: 40px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    z-index: 20;
+    touch-action: none;
+    display: none; /* hidden by default, shown via media query */
+}
+#joystick-knob {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: background 0.2s;
+}
+#joystick-area.active #joystick-knob {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Mobile look-drag hint */
+#look-hint {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 0.8rem;
+    font-family: sans-serif;
+    z-index: 15;
+    pointer-events: none;
+    text-align: right;
+    display: none;
+}
+
+/* Show joystick and hints on touch devices or small screens */
+@media (pointer: coarse) {
+    #joystick-area {
+        display: block;
+    }
+    #look-hint {
+        display: block;
+    }
+}
+@media (max-width: 600px) {
+    #joystick-area {
+        display: block;
+        width: 100px;
+        height: 100px;
+        bottom: 30px;
+        left: 30px;
+    }
+    #joystick-knob {
+        width: 44px;
+        height: 44px;
+    }
+    #look-hint {
+        display: block;
+        font-size: 0.7rem;
+        bottom: 30px;
+        right: 30px;
+    }
+}
