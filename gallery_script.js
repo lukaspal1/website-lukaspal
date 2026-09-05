@@ -16,67 +16,175 @@ const COLORS = {
 // ----- DATA: ADD YOUR PICTURES HERE! -----
 const gamingRoomPictures = [
     {
+        img: 'images/DS3_2.jpg',
+        title: 'Dark Souls III',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/eldenring2.jpg',
+        title: 'Shadow of the Erdtree',
+        date: 'Elden Rings',
+        desc: 'Beating the DLC.',
+        orientation: 'landscape'
+
+    },
+    {
+        img: 'images/eldenring1.jpg',
+        title: 'Elden Ring',
+        date: '',
+        desc: 'Beat the game for the first time'
+    },
+    {
+        img: 'images/firstberserker.jpg',
+        title: 'First Berserker',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+
+    },
+    {
+        img: 'images/kingdomsofamalur.jpg',
+        title: 'Kingdoms of Amalur',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/Monsterhunter.jpg',
+        title: 'Monster Hunter',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/MHW_behemothkill.jpg',
+        title: 'Monster Hunter World',
+        date: '',
+        desc: 'First Behemoth kill with the gentlemen',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/Mordhau.jpg',
+        title: 'Mordhau',
+        date: '',
+        desc: ''
+
+    },
+    {
+        img: 'images/necesse.jpg',
+        title: 'Necesse',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+
+    },
+    {
+        img: 'images/newworld.jpg',
+        title: 'New World',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/pogostuck.jpg ',
+        title: 'Pogostuck',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+
+    },
+    {
+        img: 'images/DANGMAN.png',
+        title: 'Guild Wars 2',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/105600_18.jpg',
+        title: 'Vanilla Terraria',
+        date: '',
+        desc: ''
+    },
+    {
+        img: 'images/tmod.jpg',
+        title: 'TMod Playthrough 1',
+        date: '',
+        desc: ''
+    },
+    {
+        img: 'images/tmod2.jpg',
+        title: 'TMod Playthrough 2',
+        date: '',
+        desc: ''
+    },
+    {
+        img: 'images/drip or drown.png',
+        title: 'Sea of Thieves',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/outwards.jpg',
+        title: 'Outward',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/payday2.jpg',
+        title: 'Payday 2',
+        date: '',
+        desc: 'Getting the secret achievement with the gentlemen',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/sekiro.jpg',
+        title: 'Sekiro',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/valheim.jpg',
+        title: 'Valheim',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/scourge.png',
+        title: 'Guild Wars 2',
+        date: '',
+        desc: 'Scourge'
+    },
+    {
         img: 'images/jump king.jpg',
         title: 'King of Jumping',
         date: 'August 10/2020',
-        desc: 'Beat Jump King for the first time'
+        desc: 'Beat Jump King for the first time',
+        orientation: 'landscape'
     },
-    {
-        img: 'https://picsum.photos/seed/darksouls1/400/500',
-        title: 'Victory',
-        date: '2024 — Dark Souls III',
-        desc: 'After 47 attempts, the Nameless King fell.'
-    },
-    {
-        img: 'https://picsum.photos/seed/minecraft1/400/500',
-        title: 'Castle',
-        date: '2023 — Minecraft',
-        desc: 'Survival base with a grand hall and a dragon head.'
-    },
-    {
-        img: 'https://picsum.photos/seed/stardew1/400/500',
-        title: 'Harvest',
-        date: '2024 — Stardew Valley',
-        desc: 'First perfect ancient fruit wine batch.'
-    },
-    {
-        img: 'https://picsum.photos/seed/zelda1/400/500',
-        title: 'Hero\'s Path',
-        date: '2023 — Tears of the Kingdom',
-        desc: 'Built a flying machine that actually worked.'
-    },
-    {
-        img: 'https://picsum.photos/seed/hades1/400/500',
-        title: 'Escape',
-        date: '2024 — Hades',
-        desc: 'First clear with the Stygian Blade.'
-    },
-    {
-        img: 'https://picsum.photos/seed/cyberpunk1/400/500',
-        title: 'Neon Night',
-        date: '2025 — Cyberpunk 2077',
-        desc: 'First time seeing the city lights from the rooftop.'
-    },
-    {
-        img: 'https://picsum.photos/seed/cyberpunk1/400/500',
-        title: 'Neon Night',
-        date: '2025 — Cyberpunk 2077',
-        desc: 'First time seeing the city lights from the rooftop.'
-    },
-    {
-        img: 'https://picsum.photos/seed/cyberpunk1/400/500',
-        title: 'Neon Night',
-        date: '2025 — Cyberpunk 2077',
-        desc: 'First time seeing the city lights from the rooftop.'
-    },
-    {
-        img: 'https://picsum.photos/seed/cyberpunk1/400/500',
-        title: 'Neon Night',
-        date: '2025 — Cyberpunk 2077',
-        desc: 'First time seeing the city lights from the rooftop.'
-    }
+
     // Add more objects here. Use img: "" for an empty placeholder.
 ];
+const travelRoomPictures = [
+    {
+        img: 'images/stocks.jpg',
+        title: 'Me in Stocks',
+        date: 'May 2024',
+        desc: '',
+    },
+    {
+        img: 'images/crawfish.jpg',
+        title: 'Little Friend',
+        date: 'July 2026',
+        desc: '',
+    },
+]
 
 // ----- SCENE SETUP -----
 const scene = new THREE.Scene();
@@ -101,7 +209,7 @@ scene.children.forEach(child => {
 });
 
 const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 1.7, 0); // eye height
+camera.position.set(0, 2, 0); // eye height
 
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -247,8 +355,39 @@ function createPlaqueTexture(title, date, desc, flip = false, fontSize = 28) {
 
     ctx.font = '20px sans-serif';
     ctx.fillStyle = '#E8E0D6';
-    const descLines = desc.length > 30 ? desc.slice(0, 30) + '…' : desc;
-    ctx.fillText(descLines, canvas.width / 2, 175);
+
+    const maxWidth = canvas.width - 60;
+    const words = desc.split(' ');
+    const lines = [];
+    let line = '';
+
+    for (const word of words) {
+        const testLine = line ? line + ' ' + word : word;
+        const testWidth = ctx.measureText(testLine).width;
+
+        if (testWidth > maxWidth && line) {
+            lines.push(line);
+            line = word;
+        } else {
+            line = testLine;
+        }
+    }
+
+    if (line) {
+        lines.push(line);
+    }
+
+    // Draw each line
+    const lineHeight = 26;
+    const startY = 170 - ((lines.length - 1) * lineHeight) / 2;
+
+    lines.forEach((text, i) => {
+        ctx.fillText(
+            text,
+            canvas.width / 2,
+            startY + i * lineHeight
+        );
+    });
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
@@ -325,7 +464,7 @@ const hallwayLength = 24;
 const wallHeight = 4.5;
 const wallThickness = 0.25;
 
-const roomWidth = 7;
+const roomWidth = 30;
 const roomDepth = 8;
 const doorWidth = 2.4;
 
@@ -549,10 +688,12 @@ function addRoom({
     addBox(frameWidth, frameWidth, doorWidth + frameWidth * 2, innerX, wallHeight - frameWidth / 2, doorZ, brassMat, false);
 
     // ----- PICTURE GALLERY ON THE BACK WALL (Single Row) -----
-// ----- PICTURE GALLERY -----
     if (pictures.length > 0) {
 
-        const maxPerWall = 3;
+        const backWallMax = 10
+        const sideWallMax = 2
+        const rightWallMax = 10
+        
 
         const frameW = 1.8;
         const frameH = 2.4;
@@ -563,7 +704,7 @@ function addRoom({
         const plaqueW = 1.6;
         const plaqueH = 0.7;
 
-        const spacing = 2.1;
+        const spacing = 3;
         const wallOffset = 0.15;
 
 
@@ -572,9 +713,23 @@ function addRoom({
         // =========================================================
         const createGalleryPicture = (imgData, position, rotationY) => {
 
+            // ----- Orientation -----
+            const isLandscape = imgData.orientation === "landscape";
+
+            const currentFrameW = isLandscape ? frameH : frameW;
+            const currentFrameH = isLandscape ? frameW : frameH;
+
+            const currentImageW = isLandscape ? imageH : imageW;
+            const currentImageH = isLandscape ? imageW : imageH;
+
+
             // ----- Frame -----
             const frame = new THREE.Mesh(
-                new THREE.BoxGeometry(frameW, frameH, 0.08),
+                new THREE.BoxGeometry(
+                    currentFrameW,
+                    currentFrameH,
+                    0.08
+                ),
                 brassMat
             );
 
@@ -594,7 +749,10 @@ function addRoom({
             });
 
             const imgPlane = new THREE.Mesh(
-                new THREE.PlaneGeometry(imageW, imageH),
+                new THREE.PlaneGeometry(
+                    currentImageW,
+                    currentImageH
+                ),
                 imgMaterial
             );
 
@@ -632,7 +790,14 @@ function addRoom({
             );
 
             plaque.position.copy(position);
-            plaque.position.y -= frameH / 2 + plaqueH / 2 + 0.15;
+
+            // Use the actual frame height so the plaque stays
+            // underneath both portrait and landscape pictures.
+            plaque.position.y -=
+                currentFrameH / 2 +
+                plaqueH / 2 +
+                0.15;
+
             plaque.rotation.y = rotationY;
 
             if (Math.abs(rotationY - Math.PI) < 0.01) {
@@ -657,7 +822,7 @@ function addRoom({
             ? roomMaxZ
             : roomMinZ;
 
-        const backPictures = pictures.slice(0, maxPerWall);
+        const backPictures = pictures.slice(0, backWallMax);
 
         const backStartX =
             centerX -
@@ -688,8 +853,8 @@ function addRoom({
         // =========================================================
 
         const sidePictures = pictures.slice(
-            maxPerWall,
-            maxPerWall * 2
+            backWallMax,
+            backWallMax + sideWallMax
         );
 
         const sideStartZ =
@@ -714,13 +879,15 @@ function addRoom({
             );
             
         }
+
+
         // =========================================================
         // WALL 3 — RIGHT WALL
         // =========================================================
 
         const rightPictures = pictures.slice(
-            maxPerWall * 2,
-            maxPerWall * 3
+            backWallMax + sideWallMax,
+            backWallMax + sideWallMax + rightWallMax
         );
 
         const rightStartX =
@@ -764,7 +931,8 @@ addRoom({
     centerZ: room2Z,
     doorZ: room2Z,
     side: "left",
-    name: "Gallery II"
+    name: "Gallery II",
+    pictures: travelRoomPictures // <-- NEW: pass the pictures array here
 });
 
 addRoom({
