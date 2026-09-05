@@ -16,7 +16,7 @@ const COLORS = {
 // ----- DATA: ADD YOUR PICTURES HERE! -----
 const gamingRoomPictures = [
     {
-        img: 'images/DS3_2.jpg',
+        img: 'images/ds3_2.jpg',
         title: 'Dark Souls III',
         date: '',
         desc: '',
@@ -31,7 +31,7 @@ const gamingRoomPictures = [
 
     },
     {
-        img: 'images/eldenring1.jpg',
+        img: 'images/Eldenring1.jpg',
         title: 'Elden Ring',
         date: '',
         desc: 'Beat the game for the first time'
