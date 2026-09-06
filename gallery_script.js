@@ -184,7 +184,105 @@ const travelRoomPictures = [
         date: 'July 2026',
         desc: '',
     },
-]
+    {
+        img: 'images/bridalveil.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/church.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/crusader.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/cupsaucer.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/dirtbike.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/feasting.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/hlubolka.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/hlubolka2.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/marinerschurch.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/ocean.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/snezka.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/snezka2.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/trees.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/sunset.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    }
+];
 
 // ----- SCENE SETUP -----
 const scene = new THREE.Scene();
@@ -209,7 +307,7 @@ scene.children.forEach(child => {
 });
 
 const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 2, 0); // eye height
+camera.position.set(0, 2, -10); // eye height
 
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -222,7 +320,7 @@ renderer.toneMappingExposure = 1.2;
 document.body.prepend(renderer.domElement);
 
 // ----- LIGHTING -----
-const ambient = new THREE.AmbientLight(0x404060, 0.4);
+const ambient = new THREE.AmbientLight(0x404060, 1);
 scene.add(ambient);
 
 const mainLight = new THREE.DirectionalLight(0xffeedd, 1.8);
@@ -342,7 +440,7 @@ function createPlaqueTexture(title, date, desc, flip = false, fontSize = 28) {
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#F5EFE6';
+    ctx.fillStyle = '#000000';
     ctx.shadowColor = 'rgba(0,0,0,0.5)';
     ctx.shadowBlur = 6;
 
@@ -350,11 +448,11 @@ function createPlaqueTexture(title, date, desc, flip = false, fontSize = 28) {
     ctx.fillText(title, canvas.width / 2, 65);
 
     ctx.font = '24px Georgia, serif';
-    ctx.fillStyle = '#D4C8B8';
+    ctx.fillStyle = '#000000';
     ctx.fillText(date, canvas.width / 2, 120);
 
     ctx.font = '20px sans-serif';
-    ctx.fillStyle = '#E8E0D6';
+    ctx.fillStyle = '#000000';
 
     const maxWidth = canvas.width - 60;
     const words = desc.split(' ');
@@ -434,6 +532,63 @@ const darkMat = new THREE.MeshStandardMaterial({
 
 
 const obstacles = [];
+// ----- CENTRAL FOUNTAIN / STATUE -----
+const fountainGroup = new THREE.Group();
+
+// Fountain basin (circular base)
+const basinGeom = new THREE.CylinderGeometry(2.5, 2.8, 1.2, 16);
+const basinMat = new THREE.MeshStandardMaterial({ color: 0xDCD2C4, roughness: 0.6 });
+const basin = new THREE.Mesh(basinGeom, basinMat);
+basin.position.y = 0.6; // sits on floor
+basin.castShadow = true;
+basin.receiveShadow = true;
+fountainGroup.add(basin);
+
+// Water surface (dark blue)
+const waterMat = new THREE.MeshStandardMaterial({ 
+    color: 0x3A6B8A, 
+    roughness: 0.2, 
+    metalness: 0.3, 
+    transparent: true, 
+    opacity: 0.8 
+});
+const waterGeom = new THREE.CylinderGeometry(2.2, 2.2, 0.1, 16);
+const water = new THREE.Mesh(waterGeom, waterMat);
+water.position.y = 1.2; // just above basin rim
+fountainGroup.add(water);
+
+// Central pedestal
+const pedestalGeom = new THREE.CylinderGeometry(0.8, 1.0, 1.5, 8);
+const pedestalMat = marbleMat; // reuse marble
+const pedestal = new THREE.Mesh(pedestalGeom, pedestalMat);
+pedestal.position.y = 1.95;
+fountainGroup.add(pedestal);
+
+// Simple statue (cylinder + sphere head)
+const statueMat = new THREE.MeshStandardMaterial({ color: 0xEDE6DC, roughness: 0.5 });
+const statueBody = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.4, 0.6, 1.8, 8),
+    statueMat
+);
+statueBody.position.y = 3.6;
+fountainGroup.add(statueBody);
+
+const statueHead = new THREE.Mesh(
+    new THREE.SphereGeometry(0.35, 8, 8),
+    statueMat
+);
+statueHead.position.y = 4.7;
+fountainGroup.add(statueHead);
+
+// Add fountain to scene
+scene.add(fountainGroup);
+
+// Collision box for the fountain (square approximation)
+const fountainCollision = new THREE.Box3(
+    new THREE.Vector3(-2.8, 0, -2.8),
+    new THREE.Vector3(2.8, 4.8, 2.8)
+);
+obstacles.push(fountainCollision);
 
 // Adds visual geometry and, optionally, a collision box.
 function addBox(w, h, d, x, y, z, mat = marbleMat, collision = true) {
@@ -457,16 +612,16 @@ function addBox(w, h, d, x, y, z, mat = marbleMat, collision = true) {
 }
 
 
-const foyerWidth = 12;
-const foyerDepth = 10;
-const hallwayWidth = 5;
+const foyerWidth = 24;
+const foyerDepth = 25;
+const hallwayWidth = 8;
 const hallwayLength = 24;
-const wallHeight = 4.5;
+const wallHeight = 5.5;
 const wallThickness = 0.25;
 
 const roomWidth = 30;
 const roomDepth = 8;
-const doorWidth = 2.4;
+const doorWidth = 3;
 
 // Foyer occupies roughly Z = -5 to +5.
 // Hallway starts at Z = +5 and continues toward +Z.
@@ -498,7 +653,7 @@ addBox(
     0,
     wallHeight,
     foyerCenterZ,
-    wallMat,
+    floorMat,
     false
 );
 
@@ -509,7 +664,7 @@ addBox(
     0,
     wallHeight,
     hallwayCenterZ,
-    wallMat,
+    floorMat,
     false
 );
 
@@ -579,10 +734,11 @@ function addPillar(x, z, radius = 0.35) {
 }
 
 // Four corner pillars. None are near the center spawn.
-addPillar(-4.6, -3.6);
-addPillar(4.6, -3.6);
-addPillar(-4.6, 3.6);
-addPillar(4.6, 3.6);
+// Replace the four corner pillars with wider positions:
+addPillar(-6.5, -5.5);
+addPillar(6.5, -5.5);
+addPillar(-6.5, 5.5);
+addPillar(6.5, 5.5);
 
 // ----- HALLWAY SIDE WALLS -----
 // Each side is split into sections so the side-room doors have real openings.
@@ -633,6 +789,72 @@ addWallSegment(hallwayRightX, z4, z5);
 // ----- FOUR SIDE ROOMS -----
 // Rooms are placed outside the hallway.
 // Their inner walls also have door openings aligned with the hallway.
+function addRoomSign(text, x, z, side) {
+
+    // Sign board
+    const signBoard = new THREE.Mesh(
+        new THREE.BoxGeometry(2.8, 0.8, 0.12),
+        brassMat
+    );
+
+    signBoard.position.set(x, 4, z);
+
+    // Create text canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 256;
+
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#8A6B3D';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Border
+    ctx.strokeStyle = '#C4A86A';
+    ctx.lineWidth = 12;
+    ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
+
+    // Text
+    ctx.fillStyle = '#000000';
+    ctx.font = 'bold 90px Georgia';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+    // Texture
+    const signTexture = new THREE.CanvasTexture(canvas);
+    signTexture.needsUpdate = true;
+
+    const signMaterial = new THREE.MeshBasicMaterial({
+        map: signTexture,
+        side: THREE.DoubleSide
+    });
+
+    const signText = new THREE.Mesh(
+        new THREE.PlaneGeometry(2.6, 0.65),
+        signMaterial
+    );
+
+    signText.position.set(x, 4, z);
+
+    // Face the hallway
+    if (side === "left") {
+        signBoard.rotation.y = Math.PI / 2;
+        signText.rotation.y = Math.PI / 2;
+        // Move text slightly towards the hallway (+X direction)
+        signText.position.x += 0.08;
+    } else {
+        signBoard.rotation.y = -Math.PI / 2;
+        signText.rotation.y = -Math.PI / 2;
+        // Move text slightly towards the hallway (-X direction)
+        signText.position.x -= 0.08;
+    }
+
+    scene.add(signBoard);
+    scene.add(signText);
+}
 
 function addRoom({
     centerX,
@@ -653,7 +875,7 @@ function addRoom({
     // Room floor
     addBox(roomWidth, 0.2, roomDepth, centerX, -0.1, centerZ, floorMat, false);
     // Room ceiling (changed to wallMat for brightness)
-    addBox(roomWidth, 0.2, roomDepth, centerX, wallHeight, centerZ, wallMat, false);
+    addBox(roomWidth, 0.2, roomDepth, centerX, wallHeight, centerZ, floorMat, false);
 
     // Outer wall (the wall facing the hallway)
     addBox(wallThickness, wallHeight, roomDepth, outerX, wallHeight / 2, centerZ, wallMat, true);
@@ -686,6 +908,15 @@ function addRoom({
     addBox(frameWidth, frameHeight, frameDepth, innerX, frameHeight / 2, doorMinZ, brassMat, false);
     addBox(frameWidth, frameHeight, frameDepth, innerX, frameHeight / 2, doorMaxZ, brassMat, false);
     addBox(frameWidth, frameWidth, doorWidth + frameWidth * 2, innerX, wallHeight - frameWidth / 2, doorZ, brassMat, false);
+
+    // ----- ROOM NAME SIGN -----
+    addRoomSign(
+        name,
+        innerX + (side === "left" ? +0.18 : -0.18),
+        doorZ,
+    
+        side
+    );
 
     // ----- PICTURE GALLERY ON THE BACK WALL (Single Row) -----
     if (pictures.length > 0) {
@@ -922,8 +1153,9 @@ addRoom({
     centerZ: room1Z,
     doorZ: room1Z,
     side: "left",
-    name: "Gallery I",
-    pictures: gamingRoomPictures // <-- NEW: pass the pictures array here
+    name: "Visions of Gaming",
+    pictures: gamingRoomPictures 
+
 });
 
 addRoom({
@@ -931,7 +1163,7 @@ addRoom({
     centerZ: room2Z,
     doorZ: room2Z,
     side: "left",
-    name: "Gallery II",
+    name: "Travels",
     pictures: travelRoomPictures // <-- NEW: pass the pictures array here
 });
 
@@ -962,6 +1194,12 @@ let moveForward = false,
     moveLeft = false,
     moveRight = false;
 const speed = 7.0;
+// Jump physics
+let verticalVelocity = 0;
+let onGround = true;
+const gravity = -20;       // How fast you fall
+const jumpStrength = 8;    // How high you jump
+const eyeHeight = 2.0;     // Your camera eye height
 
 function updateCameraRotation() {
     const euler = new THREE.Euler(pitch, yaw, 0, 'YXZ');
@@ -1012,6 +1250,13 @@ document.addEventListener('keydown', (e) => {
         case 'KeyA': moveLeft = true; break;
         case 'KeyD': moveRight = true; break;
         case 'KeyR': resetPosition(); break;
+        case 'Space': 
+            e.preventDefault(); 
+            if (onGround) { 
+                verticalVelocity = jumpStrength; 
+                onGround = false; 
+            } 
+            break;
     }
 });
 
@@ -1112,9 +1357,11 @@ function checkCollision(newPos) {
 }
 
 function resetPosition() {
-    camera.position.set(0, 1.7, 0);
+    camera.position.set(0, eyeHeight, -10); // Changed to eyeHeight
     yaw = Math.PI;
     pitch = 0;
+    verticalVelocity = 0; // Reset jump velocity
+    onGround = true;      // Reset jump state
     updateCameraRotation();
 }
 
@@ -1155,12 +1402,12 @@ const signBoard = new THREE.Mesh(
     })
 );
 
-signBoard.position.set(0, 1.6, 3.2);
+signBoard.position.set(0, 1.6, 8);
 signGroup.add(signBoard);
 
 // Sign text
 const signTexture = createPlaqueTexture(
-    "UNDER CONSTRUCTION",
+    "Under Construction",
     "",
     "",
     false,
@@ -1181,7 +1428,7 @@ const signText = new THREE.Mesh(
     
 );
 
-signText.position.set(0, 1.6, 3.11);
+signText.position.set(0, 1.6, 7.9);
 signText.rotation.y = Math.PI; // Face the camera/player
 signGroup.add(signText);
 
@@ -1199,7 +1446,7 @@ for (const x of [-1.3, 1.3]) {
     
     );
 
-    post.position.set(x, 1.0, 3.2);
+    post.position.set(x, 1.0, 8);
     signGroup.add(post);
 }
 
@@ -1261,6 +1508,16 @@ if (Math.abs(jx) > 0.1 || Math.abs(jy) > 0.1) {
 //     'pitch:', pitch,
 //     'camera X:', camera.rotation.x
 // );
+        // ----- JUMP PHYSICS -----
+    verticalVelocity += gravity * delta;                // Apply gravity
+    camera.position.y += verticalVelocity * delta;      // Move up/down
+
+    // Check if we hit the ground
+    if (camera.position.y < eyeHeight) {
+        camera.position.y = eyeHeight;                  // Snap back to ground
+        verticalVelocity = 0;                           // Stop falling
+        onGround = true;                                // Allow jump again
+    }
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
 }
