@@ -192,14 +192,14 @@ const travelRoomPictures = [
         orientation: 'landscape'
     },
     {
-        img: 'images/church.jpg',
+        img: 'images/col.jpg',
         title: '',
         date: '',
         desc: '',
         orientation: ''
     },
     {
-        img: 'images/crusader.jpg',
+        img: 'images/pantheon.jpg',
         title: '',
         date: '',
         desc: '',
@@ -213,21 +213,21 @@ const travelRoomPictures = [
         orientation: 'landscape'
     },
     {
-        img: 'images/dirtbike.jpg',
+        img: 'images/stnicholas.jpg',
         title: '',
         date: '',
         desc: '',
         orientation: ''
     },
     {
-        img: 'images/feasting.jpg',
+        img: 'images/vaticangallery.jpg',
         title: '',
         date: '',
         desc: '',
         orientation: ''
     },
     {
-        img: 'images/hlubolka.jpg',
+        img: 'images/vatican.jpg',
         title: '',
         date: '',
         desc: '',
@@ -262,18 +262,18 @@ const travelRoomPictures = [
         orientation: 'landscape'
     },
     {
-        img: 'images/snezka2.jpg',
+        img: 'images/dresdenpark.jpg',
         title: '',
         date: '',
         desc: '',
         orientation: 'landscape'
     },
     {
-        img: 'images/trees.jpg',
+        img: 'images/forum.jpg',
         title: '',
         date: '',
         desc: '',
-        orientation: ''
+        orientation: 'landscape'
     },
     {
         img: 'images/sunset.jpg',
@@ -281,6 +281,69 @@ const travelRoomPictures = [
         date: '',
         desc: '',
         orientation: ''
+    },
+    {
+        img: 'images/nightpraguecastle.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
+    },
+    {
+        img: 'images/fountainrome.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/goldenrider.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/mcdonaldsrome.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/outsidecol.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    },
+    {
+        img: 'images/romebuilding.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: ''
+    }
+];
+const gymRoomPictures = [
+    {
+        img: 'images/385bench.jpg',
+        title: '285lbs Bench',
+        date: '',
+        desc: '',
+    },
+    {
+        img: 'images/325squat.jpg',
+        title: '325 Squat for 2',
+        date: '',
+        desc: '',
+    },
+    {
+        img: 'images/janflex.jpg',
+        title: '',
+        date: '',
+        desc: '',
+        orientation: 'landscape'
     }
 ];
 
@@ -307,8 +370,10 @@ scene.children.forEach(child => {
 });
 
 const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 2, -10); // eye height
-
+// The hallway now extends toward -Z (see below), which is the camera's
+// natural default facing direction in three.js — so we spawn on the +Z
+// side, near the back wall, exactly mirroring the old setup.
+camera.position.set(0, 2, 10); // eye height
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -580,7 +645,7 @@ const statueHead = new THREE.Mesh(
 statueHead.position.y = 4.7;
 fountainGroup.add(statueHead);
 
-// Add fountain to scene
+// Add fountain to scene (sits at the origin — unaffected by which way the hallway faces)
 scene.add(fountainGroup);
 
 // Collision box for the fountain (square approximation)
@@ -619,15 +684,17 @@ const hallwayLength = 24;
 const wallHeight = 5.5;
 const wallThickness = 0.25;
 
-const roomWidth = 30;
-const roomDepth = 8;
+const roomWidth = 30;   // X extent — the distance you actually WALK into a room (the room's long axis)
+const roomDepth = 8;    // Z extent — the room's left-right width as you stand inside it (the room's short axis)
 const doorWidth = 3;
 
-// Foyer occupies roughly Z = -5 to +5.
-// Hallway starts at Z = +5 and continues toward +Z.
+// Foyer occupies roughly Z = -12.5 to +12.5.
+// The hallway now extends from the foyer toward NEGATIVE Z — this is the
+// key flip: three.js cameras face -Z by default, so with the hallway built
+// this way, yaw = 0 (no rotation at all) already looks straight down it.
 const foyerCenterZ = 0;
-const hallwayStartZ = foyerDepth / 2;
-const hallwayCenterZ = hallwayStartZ + hallwayLength / 2;
+const hallwayStartZ = -foyerDepth / 2;
+const hallwayCenterZ = hallwayStartZ - hallwayLength / 2;
 
 // ----- FLOORS -----
 // Floors are visual only. They deliberately have NO collision.
@@ -669,18 +736,19 @@ addBox(
 );
 
 // ----- MAIN FOYER -----
-// Back wall. The front remains open to the camera/player entry.
+// Back wall — the dead-end of the building, opposite the hallway.
+// Since the hallway now runs toward -Z, this solid wall sits at +Z.
 addBox(
     foyerWidth,
     wallHeight,
     wallThickness,
     0,
     wallHeight / 2,
-    -foyerDepth / 2,
+    foyerDepth / 2,
     wallMat
 );
 
-// Foyer side walls.
+// Foyer side walls (centered on Z=0, so mirroring doesn't move them).
 addBox(
     wallThickness,
     wallHeight,
@@ -733,8 +801,8 @@ function addPillar(x, z, radius = 0.35) {
     );
 }
 
-// Four corner pillars. None are near the center spawn.
-// Replace the four corner pillars with wider positions:
+// Four corner pillars — this layout is symmetric about Z=0, so it's
+// identical either way the hallway faces; nothing to flip here.
 addPillar(-6.5, -5.5);
 addPillar(6.5, -5.5);
 addPillar(-6.5, 5.5);
@@ -743,18 +811,25 @@ addPillar(6.5, 5.5);
 // ----- HALLWAY SIDE WALLS -----
 // Each side is split into sections so the side-room doors have real openings.
 //
-// Left/right room doors occur around these Z positions.
-const room1Z = hallwayStartZ + 4;
-const room2Z = hallwayStartZ + 12;
-const room3Z = hallwayStartZ + 4;
-const room4Z = hallwayStartZ + 12;
+// Left/right room doors occur around these Z positions. Since the hallway
+// now runs toward -Z, each offset below is subtracted instead of added —
+// everything else about how these are used is unchanged.
+const room1Z = hallwayStartZ - 4;
+const room2Z = hallwayStartZ - 12;
+const room3Z = room1Z;
+const room4Z = room2Z;
 
 // Hallway X boundaries.
 const hallwayLeftX = -hallwayWidth / 2;
 const hallwayRightX = hallwayWidth / 2;
 
 // Helper: create a wall segment along Z.
-function addWallSegment(x, zStart, zEnd) {
+// Made order-independent (sorts its own inputs) so it doesn't matter
+// whether "deeper into the hallway" means increasing or decreasing Z —
+// this is what makes the whole level safe to mirror.
+function addWallSegment(x, zA, zB) {
+    const zStart = Math.min(zA, zB);
+    const zEnd = Math.max(zA, zB);
     const length = zEnd - zStart;
     if (length <= 0) return;
 
@@ -772,11 +847,11 @@ function addWallSegment(x, zStart, zEnd) {
 
 // Leave a door-sized opening beside each room.
 const z0 = hallwayStartZ;
-const z1 = room1Z - doorWidth / 2;
-const z2 = room1Z + doorWidth / 2;
-const z3 = room2Z - doorWidth / 2;
-const z4 = room2Z + doorWidth / 2;
-const z5 = hallwayStartZ + hallwayLength;
+const z1 = room1Z + doorWidth / 2;
+const z2 = room1Z - doorWidth / 2;
+const z3 = room2Z + doorWidth / 2;
+const z4 = room2Z - doorWidth / 2;
+const z5 = hallwayStartZ - hallwayLength;
 
 addWallSegment(hallwayLeftX, z0, z1);
 addWallSegment(hallwayLeftX, z2, z3);
@@ -839,7 +914,8 @@ function addRoomSign(text, x, z, side) {
 
     signText.position.set(x, 4, z);
 
-    // Face the hallway
+    // Face the hallway — this rotates around the room's X-facing wall,
+    // which the Z-flip never touches, so this logic is unchanged.
     if (side === "left") {
         signBoard.rotation.y = Math.PI / 2;
         signText.rotation.y = Math.PI / 2;
@@ -862,31 +938,34 @@ function addRoom({
     doorZ,
     side,
     name,
-    pictures = []   // <-- NEW: accepts an array of picture objects
+    pictures = []   // <-- accepts an array of picture objects
 }) {
     const roomGroup = new THREE.Group();
     scene.add(roomGroup);  
-    const outerX = centerX + (side === "left" ? -roomWidth / 2 : roomWidth / 2);
-    const innerX = centerX + (side === "left" ? roomWidth / 2 : -roomWidth / 2);
+    const isLeftRoom = side === "left";
+
+    const outerX = centerX + (isLeftRoom ? -roomWidth / 2 : roomWidth / 2);
+    const innerX = centerX + (isLeftRoom ? roomWidth / 2 : -roomWidth / 2);
 
     const roomMinZ = centerZ - roomDepth / 2;
     const roomMaxZ = centerZ + roomDepth / 2;
 
     // Room floor
     addBox(roomWidth, 0.2, roomDepth, centerX, -0.1, centerZ, floorMat, false);
-    // Room ceiling (changed to wallMat for brightness)
+    // Room ceiling
     addBox(roomWidth, 0.2, roomDepth, centerX, wallHeight, centerZ, floorMat, false);
 
-    // Outer wall (the wall facing the hallway)
+    // Far wall — opposite the doorway, at the end of the room you walk toward.
     addBox(wallThickness, wallHeight, roomDepth, outerX, wallHeight / 2, centerZ, wallMat, true);
 
-    // Back wall (far from hallway)
+    // The room's two long side walls (spanning its full walking-in length).
+    // These are just physical panels here — which one ends up on the
+    // player's actual left vs right is worked out below, in the picture
+    // gallery section, since that's the only place it actually matters.
     addBox(roomWidth, wallHeight, wallThickness, centerX, wallHeight / 2, roomMaxZ, wallMat, true);
-
-    // Front wall (near hallway)
     addBox(roomWidth, wallHeight, wallThickness, centerX, wallHeight / 2, roomMinZ, wallMat, true);
 
-    // Inner wall split around the doorway
+    // Inner wall split around the doorway (this is the true "front"/door wall)
     const doorMinZ = doorZ - doorWidth / 2;
     const doorMaxZ = doorZ + doorWidth / 2;
 
@@ -912,19 +991,13 @@ function addRoom({
     // ----- ROOM NAME SIGN -----
     addRoomSign(
         name,
-        innerX + (side === "left" ? +0.18 : -0.18),
+        innerX + (isLeftRoom ? +0.18 : -0.18),
         doorZ,
-    
         side
     );
 
-    // ----- PICTURE GALLERY ON THE BACK WALL (Single Row) -----
+    // ----- PICTURE GALLERY -----
     if (pictures.length > 0) {
-
-        const backWallMax = 10
-        const sideWallMax = 2
-        const rightWallMax = 10
-        
 
         const frameW = 1.8;
         const frameH = 2.4;
@@ -938,13 +1011,39 @@ function addRoom({
         const spacing = 3;
         const wallOffset = 0.15;
 
+        // Wall capacities. The far wall is narrow (roomDepth = 8), so it
+        // only fits a couple of pictures. The two long side walls
+        // (roomWidth = 30) each fit up to 10.
+        const farWallMax = 2;
+        const leftWallMax = 10;
+        const rightWallMax = 10;
 
-        // =========================================================
-        // CREATE ONE PICTURE
-        // =========================================================
+        // ---------------------------------------------------------------
+        // WHICH ABSOLUTE WALL IS THE PLAYER'S LEFT VS RIGHT?
+        //
+        // Walking into a left-side room means facing -X; walking into a
+        // right-side room means facing +X — those are opposite directions,
+        // so "right hand" points at opposite absolute Z walls depending on
+        // which side of the hallway the room is on. Working it out once,
+        // explicitly, here — instead of scattered per-side ternaries — is
+        // what prevents this from silently breaking again later.
+        //
+        // Facing (facingX, 0, 0) with up = +Y, the right-hand direction is
+        // (0, 0, facingX). So: facing -X (left room) -> right = -Z -> roomMinZ.
+        // Facing +X (right room) -> right = +Z -> roomMaxZ.
+        // ---------------------------------------------------------------
+        const facingX = isLeftRoom ? -1 : 1;
+        const rightWallZ = facingX > 0 ? roomMaxZ : roomMinZ;
+        const leftWallZ = facingX > 0 ? roomMinZ : roomMaxZ;
+
+        // A picture's rotation only depends on which side of the room's
+        // own center its wall sits on — that's a purely local relationship
+        // and never needs to change no matter how the outer level is built.
+        const rotationForWall = (wallZ) => (wallZ > centerZ ? Math.PI : 0);
+        const inwardOffset = (wallZ) => (wallZ > centerZ ? -wallOffset : wallOffset);
+
         const createGalleryPicture = (imgData, position, rotationY) => {
 
-            // ----- Orientation -----
             const isLandscape = imgData.orientation === "landscape";
 
             const currentFrameW = isLandscape ? frameH : frameW;
@@ -952,7 +1051,6 @@ function addRoom({
 
             const currentImageW = isLandscape ? imageH : imageW;
             const currentImageH = isLandscape ? imageW : imageH;
-
 
             // ----- Frame -----
             const frame = new THREE.Mesh(
@@ -967,7 +1065,6 @@ function addRoom({
             frame.position.copy(position);
             frame.rotation.y = rotationY;
             roomGroup.add(frame);
-
 
             // ----- Image -----
             const texture = new THREE.TextureLoader().load(imgData.img);
@@ -1002,7 +1099,6 @@ function addRoom({
 
             roomGroup.add(imgPlane);
 
-
             // ----- Plaque -----
             const plaqueTexture = createPlaqueTexture(
                 imgData.title,
@@ -1021,9 +1117,6 @@ function addRoom({
             );
 
             plaque.position.copy(position);
-
-            // Use the actual frame height so the plaque stays
-            // underneath both portrait and landscape pictures.
             plaque.position.y -=
                 currentFrameH / 2 +
                 plaqueH / 2 +
@@ -1042,106 +1135,60 @@ function addRoom({
             roomGroup.add(plaque);
         };
 
-
         // =========================================================
-        // WALL 1 — BACK WALL
+        // FAR WALL — opposite the doorway (outerX). Narrow wall, few pictures.
         // =========================================================
+        const farPictures = pictures.slice(0, farWallMax);
+        const farStartZ = centerZ - (farPictures.length - 1) * spacing / 2;
+        // The far wall's normal always points back toward the doorway (-X
+        // for right rooms, since outerX is the +X extreme; +X for left rooms).
+        const farRotationY = isLeftRoom ? Math.PI / 2 : -Math.PI / 2;
+        const farOffset = isLeftRoom ? wallOffset : -wallOffset;
 
-        const isLeftRoom = side === "left";
-
-        const backWallZ = isLeftRoom
-            ? roomMaxZ
-            : roomMinZ;
-
-        const backPictures = pictures.slice(0, backWallMax);
-
-        const backStartX =
-            centerX -
-            (backPictures.length - 1) * spacing / 2;
-
-        for (let i = 0; i < backPictures.length; i++) {
-
+        for (let i = 0; i < farPictures.length; i++) {
             const position = new THREE.Vector3(
-                backStartX + i * spacing,
+                outerX + farOffset,
                 wallHeight / 2 - 0.1,
-                backWallZ + (isLeftRoom ? -wallOffset : wallOffset)
+                farStartZ + i * spacing
             );
-
-            const rotationY = isLeftRoom
-                ? Math.PI
-                : 0;
-
-            createGalleryPicture(
-                backPictures[i],
-                position,
-                rotationY
-            );
+            createGalleryPicture(farPictures[i], position, farRotationY);
         }
 
-
         // =========================================================
-        // WALL 2 — INNER / SIDE WALL
+        // LEFT WALL — the player's actual left as they walk in.
         // =========================================================
+        const leftPictures = pictures.slice(farWallMax, farWallMax + leftWallMax);
+        const leftStartX = centerX - (leftPictures.length - 1) * spacing / 2;
+        const leftRotationY = rotationForWall(leftWallZ);
+        const leftOffset = inwardOffset(leftWallZ);
 
-        const sidePictures = pictures.slice(
-            backWallMax,
-            backWallMax + sideWallMax
-        );
-
-        const sideStartZ =
-            centerZ -
-            (sidePictures.length - 1) * spacing / 2;
-
-        const sideWallX = outerX;
-        const sideRotationY = isLeftRoom ? Math.PI / 2 : -Math.PI / 2;
-
-        for (let i = 0; i < sidePictures.length; i++) {
-
+        for (let i = 0; i < leftPictures.length; i++) {
             const position = new THREE.Vector3(
-                sideWallX + (isLeftRoom ? wallOffset : -wallOffset),
+                leftStartX + i * spacing,
                 wallHeight / 2 - 0.1,
-                sideStartZ + i * spacing
+                leftWallZ + leftOffset
             );
-
-            createGalleryPicture(
-                sidePictures[i],
-                position,
-                sideRotationY
-            );
-            
+            createGalleryPicture(leftPictures[i], position, leftRotationY);
         }
 
-
         // =========================================================
-        // WALL 3 — RIGHT WALL
+        // RIGHT WALL — the player's actual right as they walk in.
         // =========================================================
-
         const rightPictures = pictures.slice(
-            backWallMax + sideWallMax,
-            backWallMax + sideWallMax + rightWallMax
+            farWallMax + leftWallMax,
+            farWallMax + leftWallMax + rightWallMax
         );
-
-        const rightStartX =
-            centerX - (rightPictures.length - 1) * spacing / 2;
+        const rightStartX = centerX - (rightPictures.length - 1) * spacing / 2;
+        const rightRotationY = rotationForWall(rightWallZ);
+        const rightOffset = inwardOffset(rightWallZ);
 
         for (let i = 0; i < rightPictures.length; i++) {
-
             const position = new THREE.Vector3(
                 rightStartX + i * spacing,
                 wallHeight / 2 - 0.1,
-                roomMinZ + wallOffset
+                rightWallZ + rightOffset
             );
-
-            // Rotate 90° relative to the left wall
-            const rightRotationY = isLeftRoom
-                ? 0
-                : Math.PI;
-
-            createGalleryPicture(
-                rightPictures[i],
-                position,
-                rightRotationY
-            );
+            createGalleryPicture(rightPictures[i], position, rightRotationY);
         }
     }
 }
@@ -1164,7 +1211,7 @@ addRoom({
     doorZ: room2Z,
     side: "left",
     name: "Travels",
-    pictures: travelRoomPictures // <-- NEW: pass the pictures array here
+    pictures: travelRoomPictures
 });
 
 addRoom({
@@ -1172,7 +1219,8 @@ addRoom({
     centerZ: room3Z,
     doorZ: room3Z,
     side: "right",
-    name: "Gallery III"
+    name: "Betterment",
+    pictures: gymRoomPictures
 });
 
 addRoom({
@@ -1187,7 +1235,7 @@ addRoom({
 
 // ----- CONTROLS (Manual) -----
 let isLocked = false;
-let yaw = Math.PI;   // <-- YOUR DEFAULT: face down the hallway
+let yaw = 0;   // three.js's default facing (-Z) already looks straight down the hallway
 let pitch = 0;
 let moveForward = false,
     moveBackward = false,
@@ -1357,8 +1405,8 @@ function checkCollision(newPos) {
 }
 
 function resetPosition() {
-    camera.position.set(0, eyeHeight, -10); // Changed to eyeHeight
-    yaw = Math.PI;
+    camera.position.set(0, eyeHeight, 10); // near the back wall, facing the hallway
+    yaw = 0;
     pitch = 0;
     verticalVelocity = 0; // Reset jump velocity
     onGround = true;      // Reset jump state
@@ -1392,7 +1440,7 @@ function addCofferedCeiling(w, d, x, y, z, mat = darkMat) {
 
 const signGroup = new THREE.Group();
 
-// Sign board
+// Sign board — placed ahead of the spawn point, along the way into the hallway (-Z).
 const signBoard = new THREE.Mesh(
     new THREE.BoxGeometry(4, 1.4, 0.15),
     new THREE.MeshStandardMaterial({
@@ -1402,7 +1450,7 @@ const signBoard = new THREE.Mesh(
     })
 );
 
-signBoard.position.set(0, 1.6, 8);
+signBoard.position.set(0, 1.6, -8);
 signGroup.add(signBoard);
 
 // Sign text
@@ -1412,24 +1460,21 @@ const signTexture = createPlaqueTexture(
     "",
     false,
     112
-    
-    
 );
 
 const signMaterial = new THREE.MeshStandardMaterial({
     map: signTexture,
     side: THREE.DoubleSide
-    
 });
 
 const signText = new THREE.Mesh(
     new THREE.PlaneGeometry(3.2, 1.1),
     signMaterial
-    
 );
 
-signText.position.set(0, 1.6, 7.9);
-signText.rotation.y = Math.PI; // Face the camera/player
+signText.position.set(0, 1.6, -7.9);
+// Plane's default normal (+Z) already faces back toward the spawn point
+// (which is now on the +Z side), so no extra rotation is needed here.
 signGroup.add(signText);
 
 // Two support posts
@@ -1443,10 +1488,9 @@ for (const x of [-1.3, 1.3]) {
     const post = new THREE.Mesh(
         new THREE.BoxGeometry(0.12, 2.0, 0.12),
         postMaterial
-    
     );
 
-    post.position.set(x, 1.0, 8);
+    post.position.set(x, 1.0, -8);
     signGroup.add(post);
 }
 
