@@ -19,7 +19,7 @@ const TRIM_Z_OFFSET = 0;
 // pictures start loading.
 const ROOM_LOAD_RADIUS = 30;
 
-const NO_COLLISION = true;   // flip to false when you're done testing
+const NO_COLLISION = false;
 
 // ============================================================
 // DATA: ADD YOUR PICTURES HERE!
