@@ -1,14 +1,14 @@
 // ============================================================
-// Faceit CS2 widget — level + ELO from faceit.json
-// (faceit.json is refreshed every 6 hours by .github/workflows/faceit.yml,
-//  which keeps the API key secret)
+// Faceit CS2 widget — level + ELO from the Cloudflare Worker in faceit-worker/
+// (the Worker holds the API key, so it never appears in the site code)
 // ============================================================
 
 (function () {
+  const STATS_URL = 'https://faceit-stats.lukaspalubiski1.workers.dev';
   const LEVEL_10_ELO = 2001;
 
   const card = document.getElementById('faceit-card');
-  if (!card) return;
+  if (!card || !STATS_URL) return;
 
   function levelColor(level) {
     if (level >= 10) return '#FE1F00';
@@ -18,9 +18,9 @@
     return '#EEEEEE';
   }
 
-  fetch('faceit.json', { cache: 'no-cache' })
+  fetch(STATS_URL)
     .then(function (res) {
-      if (!res.ok) throw new Error('faceit.json ' + res.status);
+      if (!res.ok) throw new Error('Faceit stats ' + res.status);
       return res.json();
     })
     .then(function (stats) {
@@ -45,6 +45,6 @@
       card.hidden = false;
     })
     .catch(function () {
-      // leave the card hidden until the first stats are fetched
+      // leave the card hidden if the stats can't be fetched
     });
 })();
