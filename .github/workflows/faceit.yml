@@ -23,6 +23,8 @@ jobs:
           KEY="$(echo "$FACEIT_API_KEY" | tr -d '[:space:]')"
           STATUS=$(curl -s -o player.json -w '%{http_code}' \
             -H "Authorization: Bearer $KEY" \
+            -H 'Accept: application/json' \
+            -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36' \
             'https://open.faceit.com/data/v4/players?nickname=gluckose&game=cs2')
           echo "Faceit API responded with HTTP $STATUS"
           if [ "$STATUS" != "200" ]; then
