@@ -20,13 +20,21 @@ jobs:
         env:
           FACEIT_API_KEY: ${{ secrets.FACEIT_API_KEY }}
         run: |
-          curl -sf -H "Authorization: Bearer $FACEIT_API_KEY" \
-            "https://open.faceit.com/data/v4/players?nickname=gluckose&game=cs2" \
-            | jq '{
-                level: .games.cs2.skill_level,
-                elo: .games.cs2.faceit_elo,
-                url: (.faceit_url | sub("\{lang\}"; "en"))
-              }' > faceit.json
+          KEY="$(echo "$FACEIT_API_KEY" | tr -d '[:space:]')"
+          STATUS=$(curl -s -o player.json -w '%{http_code}' \
+            -H "Authorization: Bearer $KEY" \
+            'https://open.faceit.com/data/v4/players?nickname=gluckose&game=cs2')
+          echo "Faceit API responded with HTTP $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            cat player.json
+            exit 1
+          fi
+          jq '{
+            level: .games.cs2.skill_level,
+            elo: .games.cs2.faceit_elo,
+            url: ((.faceit_url // "") | split("{lang}") | join("en"))
+          }' player.json > faceit.json
+          rm player.json
           cat faceit.json
 
       - name: Commit if changed
