@@ -865,11 +865,17 @@ body.night-mode .palace-btn:hover{
 
 /* ============================================================
    SIDE WIDGETS — beside the main block on wide screens
-   (main block is var(--max-width) wide and centred)
+   (main block is var(--max-width) wide and centred),
+   under the photo on mid-size screens, hidden on phones
    ============================================================ */
+@media (max-width: 768px){
+  .side-widgets{
+    display:none;
+  }
+}
 @media (min-width: 1400px){
   .side-widgets{
-    position:fixed;
+    position:absolute;
     top:90px;
     left:calc(50% + var(--max-width) / 2 + 20px);
     width:210px;
@@ -945,6 +951,22 @@ body.night-mode .palace-btn:hover{
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
+}
+/* long song names scroll back and forth instead of being cut off */
+.spotify-title.marquee{
+  text-overflow:clip;
+}
+.spotify-title.marquee span{
+  display:inline-block;
+  animation:spotify-marquee var(--marquee-time, 8s) linear infinite alternate;
+}
+@keyframes spotify-marquee{
+  0%, 15%{ transform:translateX(0); }
+  85%, 100%{ transform:translateX(calc(-1 * var(--marquee-distance, 0px))); }
+}
+@media (prefers-reduced-motion: reduce){
+  .spotify-title.marquee{ text-overflow:ellipsis; }
+  .spotify-title.marquee span{ animation:none; }
 }
 .spotify-title{
   font-size:18px;
