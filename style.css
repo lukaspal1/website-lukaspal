@@ -862,3 +862,122 @@ body.night-mode .palace-btn:hover{
     text-align:center;
   }
 }
+
+/* ============================================================
+   SIDE WIDGETS — beside the main block on wide screens
+   (main block is var(--max-width) wide and centred)
+   ============================================================ */
+@media (min-width: 1400px){
+  .side-widgets{
+    position:fixed;
+    top:90px;
+    left:calc(50% + var(--max-width) / 2 + 20px);
+    width:210px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .side-widgets .faceit-card,
+  .side-widgets .spotify-card{
+    margin-top:0;
+    background:var(--parchment);
+    border-color:var(--bark);
+    box-shadow:4px 4px 0 var(--bark);
+  }
+  .side-widgets .faceit-card:hover,
+  .side-widgets .spotify-card:hover{
+    border-color:var(--amber);
+  }
+}
+
+/* ============================================================
+   SPOTIFY WIDGET
+   ============================================================ */
+.spotify-card{
+  display:block;
+  margin-top:12px;
+  padding:10px;
+  text-decoration:none;
+  color:var(--ink);
+  background:var(--parchment-alt);
+  border:2px solid var(--sage);
+  box-shadow:3px 3px 0 var(--sage);
+  text-align:left;
+}
+.spotify-card[hidden]{
+  display:none;
+}
+.spotify-card:hover{
+  color:var(--ink);
+  border-color:var(--amber);
+}
+.spotify-label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-family:'Press Start 2P', monospace;
+  font-size:8px;
+  color:var(--moss);
+  text-transform:uppercase;
+}
+.spotify-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:8px;
+}
+.spotify-cover{
+  flex:0 0 auto;
+  width:48px;
+  height:48px;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+  background:var(--parchment);
+  border:2px solid var(--bark);
+}
+.spotify-text{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+.spotify-title,
+.spotify-artist{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.spotify-title{
+  font-size:18px;
+  line-height:1.1;
+}
+.spotify-artist{
+  font-size:15px;
+  color:var(--bark-light);
+}
+/* little pixel equalizer shown while a song is playing */
+.spotify-eq{
+  display:inline-flex;
+  align-items:flex-end;
+  gap:2px;
+  height:10px;
+}
+.spotify-eq[hidden]{
+  display:none;
+}
+.spotify-eq i{
+  width:3px;
+  background:var(--moss);
+  animation:spotify-eq 0.9s steps(4) infinite;
+}
+.spotify-eq i:nth-child(2){ animation-delay:-0.3s; }
+.spotify-eq i:nth-child(3){ animation-delay:-0.6s; }
+@keyframes spotify-eq{
+  0%,100%{ height:3px; }
+  50%{ height:10px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .spotify-eq i{ animation:none; height:6px; }
+}
+body.night-mode .spotify-label{
+  color:var(--amber);
+}

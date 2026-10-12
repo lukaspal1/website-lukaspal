@@ -71,6 +71,8 @@
             >
             <br>
             <!-- <button id="knight-pose-btn" class="knight-pose-btn">Pose Knight</button> -->
+            <!-- Side widgets: float beside the main block on wide screens, sit under the photo otherwise -->
+            <div class="side-widgets">
             <a id="faceit-card" class="faceit-card" href="#" target="_blank" rel="noopener noreferrer" hidden>
               <span class="faceit-label">Faceit CS2</span>
               <span class="faceit-row">
@@ -80,6 +82,17 @@
               <span class="faceit-bar"><span id="faceit-bar-fill" class="faceit-bar-fill"></span></span>
               <span id="faceit-goal" class="faceit-goal"></span>
             </a>
+            <a id="spotify-card" class="spotify-card" href="#" target="_blank" rel="noopener noreferrer" hidden>
+              <span class="spotify-label"><span id="spotify-status">Now playing</span><span id="spotify-eq" class="spotify-eq"><i></i><i></i><i></i></span></span>
+              <span class="spotify-row">
+                <canvas id="spotify-cover" class="spotify-cover" width="16" height="16"></canvas>
+                <span class="spotify-text">
+                  <span id="spotify-title" class="spotify-title"></span>
+                  <span id="spotify-artist" class="spotify-artist"></span>
+                </span>
+              </span>
+            </a>
+            </div>
           </div>
         </div>
 
@@ -235,5 +248,6 @@
 
   <script src="script.js?v=1.0"></script>
   <script src="faceit.js?v=1.0"></script>
+  <script src="spotify.js?v=1.0"></script>
 </body>
 </html>
