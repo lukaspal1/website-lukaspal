@@ -4,14 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>Memory Palace – Walkable Gallery</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap" />
     <link rel="stylesheet" href="gallery_style.css" />
 </head>
 <body>
 
     <!-- Loading Screen -->
     <div id="loading">
-        <div>🏛️ Memory Palace</div>
-        <span>loading gallery …</span>
+        <div class="loading-title">Memory Palace</div>
+        <div class="loading-ornament"><span></span>&#9670;<span></span></div>
+        <div id="loading-bar"><div id="loading-bar-fill"></div></div>
+        <div class="loading-status">Loading <span id="loading-percent">0%</span></div>
     </div>
 
     <!-- Instruction (desktop) -->

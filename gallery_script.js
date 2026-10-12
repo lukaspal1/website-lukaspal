@@ -995,9 +995,12 @@ const lazyRooms = [];
 const textureQueue = [];
 const texLoader = new THREE.TextureLoader();
 let activeLoads = 0;
+// More parallel downloads while the loading screen is up
+let maxActiveLoads = 6;
+let onTextureDone = null;
 
 function pumpTextureQueue() {
-    while (activeLoads < 2 && textureQueue.length) {
+    while (activeLoads < maxActiveLoads && textureQueue.length) {
         const { mat, url } = textureQueue.shift();
         activeLoads++;
         texLoader.load(
@@ -1007,11 +1010,18 @@ function pumpTextureQueue() {
                 mat.map = tex;
                 mat.color.set(0xffffff);
                 mat.needsUpdate = true;
+                // Upload to the GPU now instead of on first sight (avoids hitches)
+                renderer.initTexture(tex);
                 activeLoads--;
+                if (onTextureDone) onTextureDone();
                 pumpTextureQueue();
             },
             undefined,
-            () => { activeLoads--; pumpTextureQueue(); }
+            () => {
+                activeLoads--;
+                if (onTextureDone) onTextureDone();
+                pumpTextureQueue();
+            }
         );
     }
 }
@@ -1492,11 +1502,55 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Hide the loading screen as soon as the first frames are on screen
-requestAnimationFrame(() => requestAnimationFrame(() => {
+// Preload every picture behind the loading screen, then let the player in.
+// If the connection is slow, give up waiting after PRELOAD_TIMEOUT_MS and
+// let the remaining pictures keep loading in the background.
+const PRELOAD_TIMEOUT_MS = 15000;
+
+function preloadGallery() {
     const loading = document.getElementById('loading');
-    if (loading) loading.classList.add('hidden');
-}));
+    const percent = document.getElementById('loading-percent');
+    const bar = document.getElementById('loading-bar-fill');
+
+    for (const room of lazyRooms) {
+        room.started = true;
+        textureQueue.push(...room.items);
+    }
+    const total = textureQueue.length;
+    let done = 0;
+    let finished = false;
+
+    const finish = () => {
+        if (finished) return;
+        finished = true;
+        onTextureDone = null;
+        maxActiveLoads = 2;
+        // Compile shaders for the now-textured materials before the first frame
+        renderer.compile(scene, camera);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            if (loading) loading.classList.add('hidden');
+        }));
+    };
+
+    const update = () => {
+        const pct = total ? Math.round((done / total) * 100) : 100;
+        if (percent) percent.textContent = pct + '%';
+        if (bar) bar.style.width = pct + '%';
+    };
+
+    onTextureDone = () => {
+        done++;
+        update();
+        if (done >= total) finish();
+    };
+
+    update();
+    if (total === 0) finish();
+    else pumpTextureQueue();
+    setTimeout(finish, PRELOAD_TIMEOUT_MS);
+}
+
+preloadGallery();
 
 window.resetPosition = resetPosition;
 

@@ -13,6 +13,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lukas Palubiski</title>
+<meta name="description" content="Lukas Palubiski: computer science graduate, software developer, and founder of Lukas Palubiski Technical Services. Projects, experience, and contact.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lukas Palubiski">
+<meta property="og:description" content="Software developer and founder of Lukas Palubiski Technical Services. Projects, experience, and contact.">
+<meta property="og:url" content="https://palubiski.com/">
+<meta property="og:image" content="https://palubiski.com/images/IMG_20260719_183843_461.jpg">
+<meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -51,7 +58,6 @@
               <li>I like to <b>golf</b>, although I'm not very good at it</li>
               <li>I love to play <b><a class = "hero-text" href="https://steamcommunity.com/id/gluckymcdoodle/" target="_blank" rel="noopener noreferrer">video games</a></b> and my game of choice has been <b>Counter Strike</b> for a long time, hoping to hit Faceit level 10 soon</li>
               <li>I used to do <b>gymnastics</b> as well as <b>trampoline</b> when I was younger, and competed at the <b>national</b> level</li>
-              <li><b>(Under construction)</b> You can check out my 3D walkable memory palace <b><a class = "hero-text" href="gallery.html" target="_blank" rel="noopener noreferrer">here</a></b></li>
             </ul>
           </div>
           
@@ -61,12 +67,29 @@
               src="images/IMG_20260719_183843_461.jpg" 
               alt="Lukas Palubiski - Profile Photo"
               class="profile-image"
-              loading="lazy"
+              fetchpriority="high"
             >
             <br>
             <!-- <button id="knight-pose-btn" class="knight-pose-btn">Pose Knight</button> -->
+            <a id="faceit-card" class="faceit-card" href="#" target="_blank" rel="noopener noreferrer" hidden>
+              <span class="faceit-label">Faceit CS2</span>
+              <span class="faceit-row">
+                <span id="faceit-level" class="faceit-level"></span>
+                <span id="faceit-elo" class="faceit-elo"></span>
+              </span>
+              <span class="faceit-bar"><span id="faceit-bar-fill" class="faceit-bar-fill"></span></span>
+              <span id="faceit-goal" class="faceit-goal"></span>
+            </a>
           </div>
         </div>
+
+        <aside class="palace-callout">
+          <div class="palace-text">
+            <h2 class="palace-title">Memory Palace <span class="wip-badge">WIP</span></h2>
+            <p>A walkable palace with some pictures from my life that I like to remember</p>
+          </div>
+          <a class="palace-btn" href="gallery.html" target="_blank" rel="noopener noreferrer">Enter &#9654;</a>
+        </aside>
       </div>
     </section>
 
@@ -108,7 +131,7 @@
             <li class="entry-header" style="font-weight: bold">Client Projects:</li>
             <li class="entry-subheader">Great Lakes Carbide Supply <a class="entry-link" href="https://www.greatlakescarbidesupply.com" target="_blank">Website</a></li>
             <li class="entry-subheader">Tooth and Nail Carpentry <a class="entry-link" href="https://www.toothandnailcarpentry.ca" target="_blank">Website</a></li>
-            <li class="entry-subheader">Weishar Carpentry<a class="entry-link" href="https://www.weisharcarpentry.ca" target="_blank">Website</a></li>
+            <li class="entry-subheader">Weishar Carpentry <a class="entry-link" href="https://www.weisharcarpentry.ca" target="_blank">Website</a></li>
           </ul>
         </article>
       </div>
@@ -169,7 +192,7 @@
         </article>
         <article class="entry project-entry">
           <div class="entry-header">
-            <h3 class="entry-title">School Projects<span class="entry-tag"></span></h3>
+            <h3 class="entry-title">School Projects<span class="entry-tag">Coursework</span></h3>
             <a href="https://github.com/lukaspal1/portfolio" target="_blank" class="entry-link">GitHub</a>
           </div>
           <ul class="entry-details"><li>Some of the school <strong>projects</strong> and <strong>assignments</strong> I have worked on</li>
@@ -211,5 +234,6 @@
   </footer>
 
   <script src="script.js?v=1.0"></script>
+  <script src="faceit.js?v=1.0"></script>
 </body>
 </html>

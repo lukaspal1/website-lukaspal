@@ -1,0 +1,42 @@
+# Fetches Faceit CS2 stats with the secret API key and saves them to faceit.json,
+# so the key never appears in the public site code.
+name: Update Faceit stats
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # every 6 hours
+  workflow_dispatch:         # allows running it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch stats
+        env:
+          FACEIT_API_KEY: ${{ secrets.FACEIT_API_KEY }}
+        run: |
+          curl -sf -H "Authorization: Bearer $FACEIT_API_KEY" \
+            "https://open.faceit.com/data/v4/players?nickname=gluckose&game=cs2" \
+            | jq '{
+                level: .games.cs2.skill_level,
+                elo: .games.cs2.faceit_elo,
+                url: (.faceit_url | sub("\{lang\}"; "en"))
+              }' > faceit.json
+          cat faceit.json
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- faceit.json && git ls-files --error-unmatch faceit.json >/dev/null 2>&1; then
+            echo "No change"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add faceit.json
+          git commit -m "Update Faceit stats"
+          git push
