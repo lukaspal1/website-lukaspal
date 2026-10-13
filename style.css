@@ -166,6 +166,13 @@ h1:hover::after, h2:hover::after, h3:hover::after {
   gap: 16px;
 }
 
+/* Page nav on the left, social links pushed to the right */
+@media (min-width: 641px) {
+  #main-nav + .social-links {
+    margin-left: auto;
+  }
+}
+
 /* On small screens, stack header items */
 @media (max-width: 640px) {
   .header-inner {
@@ -392,6 +399,7 @@ body{
 .hero-image {
     flex: 0 0 200px; /* Fixed width */
     text-align: center;
+    padding-top: 48px; /* headroom for the character walking on the photo */
 }
 
 /* Profile Image - Pixel Style to match your theme */

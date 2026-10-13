@@ -648,6 +648,9 @@ function drawNPC(time) {
 
     // THIS LINE ACTIVATES THE DARK MODE CSS
     document.body.classList.toggle('night-mode', isNight);
+
+    // Remember the choice so it carries over between pages
+    try { localStorage.setItem('theme', isNight ? 'night' : 'day'); } catch (e) {}
 }
   // ------------------------------------------------------------
   // WIRING
@@ -661,6 +664,10 @@ function drawNPC(time) {
 
   // Add event listener to button
   document.addEventListener('DOMContentLoaded', function() {
+    let saved = null;
+    try { saved = localStorage.getItem('theme'); } catch (e) {}
+    if (saved === 'night' && !isNight) toggleDayNight();
+
     const btn = document.getElementById('theme-toggle');
     if (btn) {
       btn.addEventListener('click', toggleDayNight);
@@ -713,6 +720,9 @@ var modalImg = document.getElementById("modal-img");
 var captionText = document.getElementById("caption");
 var closeBtn = document.getElementsByClassName("close")[0];
 
+// Profile modal only exists on the home page
+if (img && modal) {
+
 // Click on thumbnail to open modal
 img.onclick = function(){
   modal.style.display = "flex"; // Uses flex to center the image
@@ -739,168 +749,105 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
-
-// animation
-// Set up the canvas
-const knightCanvas = document.getElementById('npc-canvas');
-const knightCtx = knightCanvas.getContext('2d');
-
-function resizeKnightCanvas() {
-  knightCanvas.width = window.innerWidth;
-  knightCanvas.height = window.innerHeight;
 }
-window.addEventListener('resize', resizeKnightCanvas);
-resizeKnightCanvas();
 
-// The profile image element to stand on
-const profileImg = document.getElementById('profile-thumb');
 
-// Scale for the knight (4 is huge and detailed!)
-const SCALE = 4;
+// ============================================================
+// Terraria character walking on top of the profile photo
+// ============================================================
+(function () {
+  const canvas = document.getElementById('npc-canvas');
+  const photo = document.getElementById('profile-thumb');
+  if (!canvas || !photo) return;
+  const ctx = canvas.getContext('2d');
 
-// Palette
-const knightColors = {
-  lightArmor: '#D1D5DB', darkArmor: '#9CA3AF', darkestArmor: '#6B7280', 
-  visor: '#111827', eyes: '#22D3EE', 
-  cape: '#B91C1C', capeDark: '#7F1D1D', plume: '#EF4444', 
-  swordHandle: '#F59E0B', swordBlade: '#E5E7EB', boots: '#4B5563'
-};
+  // Sprite sheet exported from Terraria: 25 frames of 44x54 stacked
+  // vertically, facing left. Frame 0 is standing, 2-15 are the walk cycle.
+  const sheet = new Image();
+  sheet.src = 'images/character.png';
+  const FW = 44, FH = 54;
+  const FEET = 52;                                   // first empty row under the feet
+  const STAND = 0;
+  const WALK = Array.from({ length: 14 }, (_, i) => 2 + i);
+  const FRAME_MS = 75;
 
-// // Pose State
-// let isPosing = false;
+  const SCALE = 1;          // CSS pixels per sprite pixel
+  const SPEED = 30;         // CSS pixels per second
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// // Add click event to the new button to toggle the pose
-// const knightPoseBtn = document.getElementById('knight-pose-btn');
-// if (knightPoseBtn) {
-//   knightPoseBtn.addEventListener('click', () => {
-//     isPosing = !isPosing;
-//   });
-// }
+  let dpr = 1, px = SCALE;
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    px = Math.max(1, Math.round(SCALE * dpr));   // whole device pixels, stays crisp
+    canvas.width = Math.round(window.innerWidth * dpr);
+    canvas.height = Math.round(window.innerHeight * dpr);
+  }
+  window.addEventListener('resize', resize);
+  resize();
 
-// function knightFrame(time) {
-//   knightCtx.clearRect(0, 0, knightCanvas.width, knightCanvas.height);
-  
-//   if (profileImg) {
-//     const rect = profileImg.getBoundingClientRect();
-//     const centerX = rect.left + rect.width / 2;
-//     const baseY = rect.top; // Top edge of profile image
+  // x is the offset along the photo's top edge, in CSS pixels
+  let x = 0, dir = 1, pauseUntil = 0, last = 0;
 
-//     // --- IDLE ANIMATIONS ---
-//     const breathe = Math.floor(time / 500) % 2; 
-//     const blink = Math.floor(time / 3000) % 6; 
-//     const capeFlow = Math.floor(time / 300) % 3;
-    
-//     // Hero Hop animation while posing (much faster, more energetic)
-//     const hop = isPosing ? Math.floor(time / 200) % 2 : 0;
+  // Face the cursor like in Terraria; without a mouse, face the walking direction
+  let mouseX = null, facing = 1;
+  window.addEventListener('mousemove', (e) => { mouseX = e.clientX; });
+  document.addEventListener('mouseleave', () => { mouseX = null; });
 
-//     // Snap to pixel grid (Hop makes him jump up 1 block)
-//     const baseX = Math.round(centerX);
-//     const baseYPos = Math.round(baseY - (breathe * SCALE) - (hop * SCALE));
+  function drawSprite(left, bottom, facing, walking, time) {
+    const f = walking ? WALK[Math.floor(time / FRAME_MS) % WALK.length] : STAND;
+    const ox = Math.round(left * dpr);
+    const oy = Math.round(bottom * dpr) - FEET * px;
 
-//     // --- CAPE (Behind) ---
-//     knightCtx.fillStyle = isPosing ? knightColors.capeDark : knightColors.cape;
-//     // Bigger cape when posing
-//     const capeHeight = isPosing ? 14 * SCALE : 9 * SCALE;
-//     knightCtx.fillRect(baseX - (2 * SCALE), baseYPos - (6 * SCALE), 4 * SCALE, capeHeight);
-//     // Flowing cape tip
-//     knightCtx.fillRect(baseX - (2 * SCALE), baseYPos - (6 * SCALE) + capeHeight, capeFlow === 2 ? 3 * SCALE : 2 * SCALE, 1 * SCALE);
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+    if (facing > 0) {
+      // The sheet faces left, so mirror it to walk right
+      ctx.translate(ox * 2 + FW * px, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(sheet, 0, f * FH, FW, FH, ox, oy, FW * px, FH * px);
+    ctx.restore();
+  }
 
-//     // --- SWORD ---
-//     if (isPosing) {
-//       // Hero Pose: Sword raised straight up!
-//       knightCtx.fillStyle = knightColors.swordHandle;
-//       knightCtx.fillRect(baseX + (2 * SCALE), baseYPos - (13 * SCALE), 2 * SCALE, 2 * SCALE);
-//       knightCtx.fillStyle = knightColors.swordBlade;
-//       knightCtx.fillRect(baseX + (3 * SCALE), baseYPos - (19 * SCALE), 1 * SCALE, 6 * SCALE);
-//       knightCtx.fillStyle = knightColors.lightArmor; // Glint
-//       knightCtx.fillRect(baseX + (3 * SCALE), baseYPos - (19 * SCALE), 1, 1);
-//     } else {
-//       // Idle: Sword on back
-//       knightCtx.fillStyle = knightColors.swordHandle;
-//       knightCtx.fillRect(baseX + (2 * SCALE), baseYPos - (10 * SCALE), 2 * SCALE, 2 * SCALE);
-//       knightCtx.fillStyle = knightColors.swordBlade;
-//       knightCtx.fillRect(baseX + (3 * SCALE), baseYPos - (13 * SCALE), 1 * SCALE, 5 * SCALE);
-//     }
+  function frame(time) {
+    const dt = last ? Math.min((time - last) / 1000, 0.1) : 0;
+    last = time;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-//     // --- SHADOW (On the image) ---
-//     knightCtx.globalAlpha = 0.4;
-//     knightCtx.fillStyle = '#000000';
-//     const shadowWidth = isPosing ? 10 * SCALE : 8 * SCALE;
-//     knightCtx.fillRect(baseX - (shadowWidth / 2), Math.round(baseY), shadowWidth, 1);
-//     knightCtx.globalAlpha = 1;
+    const rect = photo.getBoundingClientRect();
+    const range = Math.max(0, rect.width - FW * SCALE - 8);
+    let walking = false;
 
-//     // --- LEGS ---
-//     if (isPosing) {
-//       // Wide stance hero pose
-//       knightCtx.fillStyle = knightColors.boots;
-//       knightCtx.fillRect(baseX - (4 * SCALE), baseYPos - (6 * SCALE), 2 * SCALE, 6 * SCALE);
-//       knightCtx.fillRect(baseX + (2 * SCALE), baseYPos - (6 * SCALE), 2 * SCALE, 6 * SCALE);
-//       // Thighs
-//       knightCtx.fillStyle = knightColors.darkestArmor;
-//       knightCtx.fillRect(baseX - (4 * SCALE), baseYPos - (8 * SCALE), 2 * SCALE, 2 * SCALE);
-//       knightCtx.fillRect(baseX + (2 * SCALE), baseYPos - (8 * SCALE), 2 * SCALE, 2 * SCALE);
-//     } else {
-//       // Straight idle stance
-//       knightCtx.fillStyle = knightColors.boots;
-//       knightCtx.fillRect(baseX - (2 * SCALE), baseYPos - (3 * SCALE), 2 * SCALE, 3 * SCALE);
-//       knightCtx.fillRect(baseX + (0 * SCALE), baseYPos - (3 * SCALE), 2 * SCALE, 3 * SCALE);
-//       // Thighs
-//       knightCtx.fillStyle = knightColors.darkestArmor;
-//       knightCtx.fillRect(baseX - (2 * SCALE), baseYPos - (5 * SCALE), 2 * SCALE, 2 * SCALE);
-//       knightCtx.fillRect(baseX + (0 * SCALE), baseYPos - (5 * SCALE), 2 * SCALE, 2 * SCALE);
-//     }
+    if (!reduceMotion && time >= pauseUntil) {
+      walking = true;
+      x += dir * SPEED * dt;
+      if ((x <= 0 && dir < 0) || (x >= range && dir > 0)) {
+        // Reached an edge: stop for a moment, then turn around
+        x = Math.min(Math.max(x, 0), range);
+        dir = -dir;
+        pauseUntil = time + 1200 + Math.random() * 2000;
+      } else if (Math.random() < dt * 0.15) {
+        // Occasionally stop mid-walk to look around
+        pauseUntil = time + 800 + Math.random() * 1500;
+        if (Math.random() < 0.4) dir = -dir;
+      }
+    }
+    x = Math.min(x, range);
 
-//     // --- BODY (Chest Plate) ---
-//     // Body is wider when posing (flexing!)
-//     const bodyWidth = isPosing ? 12 * SCALE : 8 * SCALE;
-//     knightCtx.fillStyle = knightColors.lightArmor;
-//     knightCtx.fillRect(baseX - (bodyWidth / 2), baseYPos - (12 * SCALE), bodyWidth, 7 * SCALE);
-    
-//     // Dark side shading
-//     knightCtx.fillStyle = knightColors.darkArmor;
-//     knightCtx.fillRect(baseX + (bodyWidth / 2) - (2 * SCALE), baseYPos - (12 * SCALE), 2 * SCALE, 7 * SCALE);
-    
-//     // Center belt stripe
-//     knightCtx.fillStyle = knightColors.darkestArmor;
-//     knightCtx.fillRect(baseX - SCALE, baseYPos - (12 * SCALE), 2 * SCALE, 7 * SCALE);
+    const left = rect.left + 4 + x;
+    if (mouseX === null) {
+      facing = dir;
+    } else {
+      // Small dead zone so it doesn't flicker when the cursor is right above it
+      const offset = mouseX - (left + FW * SCALE / 2);
+      if (Math.abs(offset) > 4) facing = offset > 0 ? 1 : -1;
+    }
 
-//     // --- SHOULDER PADS ---
-//     knightCtx.fillStyle = knightColors.darkArmor;
-//     // Left Pauldron
-//     knightCtx.fillRect(baseX - (bodyWidth / 2) - SCALE, baseYPos - (13 * SCALE), 2 * SCALE, 4 * SCALE);
-//     // Right Pauldron
-//     knightCtx.fillRect(baseX + (bodyWidth / 2) - SCALE, baseYPos - (13 * SCALE), 2 * SCALE, 4 * SCALE);
-//     // Highlight
-//     knightCtx.fillStyle = knightColors.lightArmor;
-//     knightCtx.fillRect(baseX - (bodyWidth / 2) - SCALE, baseYPos - (13 * SCALE), 1, 1);
-//     knightCtx.fillRect(baseX + (bodyWidth / 2) - SCALE, baseYPos - (13 * SCALE), 1, 1);
-
-//     // --- HELMET ---
-//     knightCtx.fillStyle = knightColors.lightArmor;
-//     knightCtx.fillRect(baseX - (3 * SCALE), baseYPos - (17 * SCALE), 6 * SCALE, 4 * SCALE);
-//     // Helmet dark shade
-//     knightCtx.fillStyle = knightColors.darkArmor;
-//     knightCtx.fillRect(baseX + (1 * SCALE), baseYPos - (17 * SCALE), 2 * SCALE, 4 * SCALE);
-    
-//     // Visor slot
-//     knightCtx.fillStyle = knightColors.visor;
-//     knightCtx.fillRect(baseX - (2 * SCALE), baseYPos - (15 * SCALE), 4 * SCALE, 1 * SCALE);
-
-//     // Eyes (Blinking)
-//     if (blink !== 0) {
-//       knightCtx.fillStyle = knightColors.eyes;
-//       knightCtx.fillRect(baseX - (1 * SCALE), baseYPos - (15 * SCALE), 1, 1);
-//       knightCtx.fillRect(baseX + (1 * SCALE), baseYPos - (15 * SCALE), 1, 1);
-//     }
-
-//     // --- PLUME (Flowing) ---
-//     knightCtx.fillStyle = knightColors.plume;
-//     knightCtx.fillRect(baseX - SCALE, baseYPos - (20 * SCALE), 2 * SCALE, 3 * SCALE);
-//     knightCtx.fillRect(baseX - (2 * SCALE), baseYPos - (19 * SCALE) + (capeFlow % 2), 4 * SCALE, 1 * SCALE);
-//   }
-
-//   requestAnimationFrame(knightFrame);
-// }
-
-// // Start the loop!
-// requestAnimationFrame(knightFrame);
+    // Feet rest on the photo's border, only while it's on screen
+    if (sheet.complete && sheet.naturalWidth && rect.bottom > 0 && rect.top < window.innerHeight && rect.width > 0) {
+      drawSprite(left, rect.top + 1, facing, walking, time);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KP51CSKDEX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KP51CSKDEX');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects – Lukas Palubiski</title>
+<meta name="description" content="Lukas Palubiski: computer science graduate and software developer. Education, client websites, and software projects in Python, web, and data.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Projects – Lukas Palubiski">
+<meta property="og:description" content="Education, client work, and software projects by Lukas Palubiski.">
+<meta property="og:url" content="https://palubiski.com/projects.html">
+<meta property="og:image" content="https://palubiski.com/images/IMG_20260719_183843_461.jpg">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button id="theme-toggle" aria-label="Toggle day/night" class="theme-toggle">🌙</button>
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="npc-canvas"></canvas>
+
+  <header id="site-header">
+    <div class="header-inner">
+      <nav id="main-nav" aria-label="Site">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="projects.html" class="active" aria-current="page">Projects</a></li>
+        </ul>
+      </nav>
+      <ul class="social-links">
+        <li><a href="https://linkedin.com/in/lukas-palubiski-417b95355/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/lukaspal1" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://www.instagram.com/lukaspalubiski.v2/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="top">
+    <section id="intro" class="section">
+      <div class="section-inner">
+        <h1 class="hero-name">Work &amp; Projects</h1>
+        <p>What I've studied, the client work I've done, and the things I've built.</p>
+      </div>
+    </section>
+
+    <section id="education" class="section">
+      <div class="section-inner">
+        <h2 class="section-title">Education</h2>
+        <article class="entry">
+          <div class="entry-header">
+            <h3 class="entry-title">Wilfrid Laurier University</h3>
+            <span class="entry-location">Waterloo, ON, Canada</span>
+          </div>
+          <div class="entry-subheader">
+            <span class="entry-subheader">Honours Bachelor of Science (B.Sc.), Honours Computer Science</span>
+            <span class="entry-dates">Sept. 2022 – June 2026</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="experience" class="section">
+      <div class="section-inner">
+        <h2 class="section-title">Experience</h2>
+        <article class="entry">
+          <div class="entry-header">
+            <h3 class="entry-title">Founder &amp; Software Developer</h3>
+            <span class="entry-dates">July 2026 – Present</span>
+          </div>
+          <div class="entry-subheader">
+            <span class="entry-subheader">Lukas Palubiski Technical Services</span>
+            <span class="entry-location">Remote</span>
+          </div>
+          <ul class="entry-details client-list">
+            <li class="entry-header" style="font-weight: bold">Client Projects:</li>
+            <li class="entry-subheader">Great Lakes Carbide Supply <a class="entry-link" href="https://www.greatlakescarbidesupply.com" target="_blank">Website</a></li>
+            <li class="entry-subheader">Tooth and Nail Carpentry <a class="entry-link" href="https://www.toothandnailcarpentry.ca" target="_blank">Website</a></li>
+            <li class="entry-subheader">Weishar Carpentry <a class="entry-link" href="https://www.weisharcarpentry.ca" target="_blank">Website</a></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="section-inner">
+        <h2 class="section-title">Projects</h2>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">File Janitor<span class="entry-tag">Desktop App / Local AI</span></h3>
+            <a href="https://github.com/lukaspal1/file-janitor" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details">
+            <li>Built a <strong>Python / PyQt6</strong> desktop app that scans folders, proposes destinations for files, and moves nothing until the user approves.</li>
+            <li>Combined <strong>rule-based sorting</strong> (TOML-configured matching by extension, name, or path) with <strong>category sorting via a local AI model</strong> that reads documents to choose a folder, so no data leaves the PC.</li>
+            <li>Added a <strong>duplicate finder</strong>, desktop cleanup, and a "belongs here" check, with safety guards that skip system, code, and cloud-synced folders, plus a full <strong>action log with undo</strong>.</li>
+          </ul>
+        </article>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">Czech Grocery Price Tracker<span class="entry-tag">Data Engineering / Web Scraping</span></h3>
+            <a href="https://github.com/lukaspal1/Grocery-store-price-tracker" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details">
+            <li>Built an <strong>ETL pipeline</strong> that scrapes current prices from three major Czech grocery chains (<strong>Rohlík, Košík, Lidl</strong>) using per-store techniques including <strong>Playwright</strong> for Cloudflare-protected sites and direct <strong>JSON API</strong> calls.</li>
+            <li>Designed a <strong>SQLite storage layer</strong> with change detection to track price history without unbounded growth, and a <strong>rule-based product matcher</strong> that links identical items across stores with confidence scores.</li>
+            <li>Interactive <strong>Streamlit dashboard</strong> for cross-store price comparison, savings calculation, and promotional tracking.</li>
+          </ul>
+        </article>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">Multi-Client File Transfer System<span class="entry-tag">Computer Networks / Socket Programming</span></h3>
+            <a href="https://github.com/lukaspal1/Networks-Programming-Assignment" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details"><li>Built a multi-threaded <strong>TCP client-server application</strong> in Python using raw <strong>BSD sockets</strong>.</li></ul>
+        </article>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">Climate Tweet Sentiment Analysis<span class="entry-tag">Data Analysis</span></h3>
+            <a href="https://github.com/lukaspal1/Portfolio/blob/main/DataVisualization_A3.ipynb" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details"><li>Analyzed 2,000 climate tweets across 39 countries using <strong>Python (Pandas, Seaborn, Plotly)</strong>.</li></ul>
+        </article>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">BiteVerse<span class="entry-tag">Software Engineering</span></h3>
+            <a href="https://github.com/muchlogic/CP317-Final-Project" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details"><li>Full-stack recipe-sharing platform (<strong>JavaScript, HTML, Tailwind CSS</strong>).</li></ul>
+        </article>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">This Website<span class="entry-tag">Web Development</span></h3>
+            <a href="https://github.com/lukaspal1/website-lukaspal" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details"><li>Designed and implemented this personal portfolio website using <strong>HTML, CSS, and JavaScript</strong>.</li></ul>
+        </article>
+        <article class="entry project-entry">
+          <div class="entry-header">
+            <h3 class="entry-title">School Projects<span class="entry-tag">Coursework</span></h3>
+            <a href="https://github.com/lukaspal1/portfolio" target="_blank" class="entry-link">GitHub</a>
+          </div>
+          <ul class="entry-details"><li>Some of the school <strong>projects</strong> and <strong>assignments</strong> I have worked on</li>
+          <li>Projects include topics such as: <strong>Systems and Low level programming, data analysis, machine learning, software & web, hardware and logic</strong>, and others</li>
+          </ul>
+
+        </article>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact-section">
+      <div class="section-inner">
+        <h2 class="section-title">Get in Touch</h2>
+        <p><a href="mailto:lukas@palubiski.com">lukas@palubiski.com</a></p>
+        <ul class="social-links footer-social-links">
+          <li><a href="https://linkedin.com/in/lukas-palubiski-417b95355/" target="_blank">LinkedIn</a></li>
+          <li><a href="https://github.com/lukaspal1" target="_blank">GitHub</a></li>
+          <li><a href="https://www.instagram.com/lukaspalubiski.v2/" target="_blank">Instagram</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer">
+    <p>&copy; <span id="current-year"></span> Lukas Palubiski</p>
+  </footer>
+
+  <script src="script.js?v=1.6"></script>
+</body>
+</html>
