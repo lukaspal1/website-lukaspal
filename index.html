@@ -98,6 +98,20 @@
                 </span>
               </span>
             </a>
+            <!-- Current book: edit the title/author text and the data-* values.
+                 The cover is fetched from Open Library by ISBN; to use your own
+                 picture instead, add data-cover="images/your-file.jpg". -->
+            <a id="book-card" class="book-card" href="#" target="_blank" rel="noopener noreferrer"
+               data-isbn="9781784965365">
+              <span class="book-label">Current read</span>
+              <span class="book-row">
+                <canvas id="book-cover" class="book-cover" width="50" height="75"></canvas>
+                <span class="book-text">
+                  <span class="book-title">The Master of Mankind</span>
+                  <span class="book-author">Aaron Dembski-Bowden</span>
+                </span>
+              </span>
+            </a>
             </div>
           </div>
         </div>
@@ -156,8 +170,9 @@
     <p>&copy; <span id="current-year"></span> Lukas Palubiski</p>
   </footer>
 
-  <script src="script.js?v=1.6"></script>
+  <script src="script.js?v=1.11"></script>
   <script src="faceit.js?v=1.0"></script>
   <script src="spotify.js?v=1.0"></script>
+  <script src="book.js?v=1.1"></script>
 </body>
 </html>

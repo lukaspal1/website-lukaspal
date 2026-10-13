@@ -124,6 +124,11 @@ h1:hover::after, h2:hover::after, h3:hover::after {
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
 }
+/* Sword cursor while hovering the character (set from script.js) */
+html.sword-cursor,
+html.sword-cursor * {
+  cursor: url('images/sword-cursor.png?v=2') 1 1, crosshair !important;
+}
 
 /* ============================================================
    DAY/NIGHT TOGGLE BUTTON
@@ -892,14 +897,16 @@ body.night-mode .palace-btn:hover{
     gap:14px;
   }
   .side-widgets .faceit-card,
-  .side-widgets .spotify-card{
+  .side-widgets .spotify-card,
+  .side-widgets .book-card{
     margin-top:0;
     background:var(--parchment);
     border-color:var(--bark);
     box-shadow:4px 4px 0 var(--bark);
   }
   .side-widgets .faceit-card:hover,
-  .side-widgets .spotify-card:hover{
+  .side-widgets .spotify-card:hover,
+  .side-widgets .book-card:hover{
     border-color:var(--amber);
   }
 }
@@ -1009,5 +1016,63 @@ body.night-mode .palace-btn:hover{
   .spotify-eq i{ animation:none; height:6px; }
 }
 body.night-mode .spotify-label{
+  color:var(--amber);
+}
+
+/* ============================================================
+   CURRENT BOOK WIDGET
+   ============================================================ */
+.book-card{
+  display:block;
+  margin-top:12px;
+  padding:10px;
+  text-decoration:none;
+  color:var(--ink);
+  background:var(--parchment-alt);
+  border:2px solid var(--sage);
+  box-shadow:3px 3px 0 var(--sage);
+  text-align:left;
+}
+.book-card:hover{
+  color:var(--ink);
+  border-color:var(--amber);
+}
+.book-label{
+  display:block;
+  font-family:'Press Start 2P', monospace;
+  font-size:8px;
+  color:var(--moss);
+  text-transform:uppercase;
+}
+.book-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:8px;
+}
+/* canvas slightly smaller than shown, like the album art, for a light pixel look */
+.book-cover{
+  flex:0 0 auto;
+  width:48px;
+  height:72px;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+  background:var(--parchment);
+  border:2px solid var(--bark);
+}
+.book-text{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+.book-title{
+  font-size:18px;
+  line-height:1.1;
+}
+.book-author{
+  font-size:15px;
+  color:var(--bark-light);
+}
+body.night-mode .book-label{
   color:var(--amber);
 }

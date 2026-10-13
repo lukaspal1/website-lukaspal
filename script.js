@@ -753,7 +753,8 @@ document.addEventListener('keydown', function(event) {
 
 
 // ============================================================
-// Terraria character walking on top of the profile photo
+// Terraria character walking on top of the profile photo.
+// Hover it for a sword cursor, click to hit it.
 // ============================================================
 (function () {
   const canvas = document.getElementById('npc-canvas');
@@ -762,18 +763,31 @@ document.addEventListener('keydown', function(event) {
   const ctx = canvas.getContext('2d');
 
   // Sprite sheet exported from Terraria: 25 frames of 44x54 stacked
-  // vertically, facing left. Frame 0 is standing, 2-15 are the walk cycle.
+  // vertically, facing left. Frame 0 is standing, 1 is jumping,
+  // 2-15 are the walk cycle.
   const sheet = new Image();
   sheet.src = 'images/character.png';
   const FW = 44, FH = 54;
   const FEET = 52;                                   // first empty row under the feet
-  const STAND = 0;
+  const STAND = 0, JUMP = 1;
   const WALK = Array.from({ length: 14 }, (_, i) => 2 + i);
   const FRAME_MS = 75;
 
   const SCALE = 1;          // CSS pixels per sprite pixel
   const SPEED = 30;         // CSS pixels per second
+  const GRAVITY = 700;      // CSS pixels per second squared
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const MAX_HP = 100;
+  const RESPAWN_MS = 4000;
+  const DEATH_MESSAGES = [
+    'Lukas was slain by a visitor.',
+    'Lukas was struck down by a visitor.',
+    'Lukas was cut down the middle.',
+    'Lukas forgot to drink a healing potion.',
+    "Lukas's last words were 'check out my projects'.",
+  ];
+  const GIB_COLORS = ['#24124A', '#160A30', '#E82A2A', '#A01010', '#D3B659', '#F43131'];
 
   let dpr = 1, px = SCALE;
   function resize() {
@@ -785,16 +799,95 @@ document.addEventListener('keydown', function(event) {
   window.addEventListener('resize', resize);
   resize();
 
-  // x is the offset along the photo's top edge, in CSS pixels
-  let x = 0, dir = 1, pauseUntil = 0, last = 0;
+  // Position: x along the photo's top edge, y above it (negative = in the air)
+  let x = 0, y = 0, vx = 0, vy = 0, dir = 1, pauseUntil = 0, last = 0;
+  let hp = MAX_HP, lastHitAt = -Infinity, blinkUntil = 0;
+  let deadUntil = 0, deathMessage = '';
+  const texts = [];       // floating damage numbers, relative to the photo
+  const gibs = [];        // death particles, relative to the photo
+  const slashes = [];     // sword slash streaks, relative to the photo
+  let mouse = null;
 
-  // Face the cursor like in Terraria; without a mouse, face the walking direction
-  let mouseX = null, facing = 1;
-  window.addEventListener('mousemove', (e) => { mouseX = e.clientX; });
-  document.addEventListener('mouseleave', () => { mouseX = null; });
+  const inAir = () => y < 0 || vy < 0;
 
-  function drawSprite(left, bottom, facing, walking, time) {
-    const f = walking ? WALK[Math.floor(time / FRAME_MS) % WALK.length] : STAND;
+  // Character hitbox in viewport coordinates
+  function isOver(cx, cy) {
+    if (deadUntil || !sheet.complete) return false;
+    const rect = photo.getBoundingClientRect();
+    const left = rect.left + 4 + x;
+    const feet = rect.top + 1 + y;
+    return cx >= left + 5 && cx <= left + FW - 5 && cy >= feet - 50 && cy <= feet;
+  }
+
+  // Sword cursor only while hovering the character. Also re-checked every
+  // frame, since the character walks under a still cursor.
+  const updateCursor = () => {
+    document.documentElement.classList.toggle('sword-cursor', !!mouse && isOver(mouse.x, mouse.y));
+  };
+  window.addEventListener('mousemove', (e) => { mouse = { x: e.clientX, y: e.clientY }; updateCursor(); });
+  document.addEventListener('mouseleave', () => { mouse = null; updateCursor(); });
+
+  // Capture phase so the hit doesn't also click the photo or a link underneath
+  window.addEventListener('click', (e) => {
+    if (!isOver(e.clientX, e.clientY)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    hit(e.clientX, last);
+  }, true);
+
+  function hit(clickX, now) {
+    const rect = photo.getBoundingClientRect();
+    const crit = Math.random() < 0.15;
+    const dmg = (10 + Math.floor(Math.random() * 8)) * (crit ? 2 : 1);
+    hp = Math.max(0, hp - dmg);
+    lastHitAt = now;
+    blinkUntil = now + 500;
+
+    // Knocked away from the side it was hit on, with a little hop
+    const centre = rect.left + 4 + x + FW / 2;
+    vx = (clickX < centre ? 1 : -1) * 90;
+    vy = -150;
+
+    // Slash sweeps across the body, downward, in the direction of the swing
+    const angle = (35 + Math.random() * 30 - 15) * Math.PI / 180;
+    slashes.push({
+      x: x + FW / 2, y: y - 26,
+      dx: Math.cos(angle) * (clickX < centre ? 1 : -1), dy: Math.sin(angle),
+      len: crit ? 74 : 60, width: crit ? 8 : 6,
+      bow: (Math.random() < 0.5 ? -1 : 1) * 6, born: now,
+    });
+
+    texts.push({
+      x: x + FW / 2 + (Math.random() * 12 - 6), y: y - 64,
+      text: String(dmg), crit, born: now,
+    });
+
+    if (hp === 0) die(now);
+  }
+
+  function die(now) {
+    deadUntil = now + RESPAWN_MS;
+    deathMessage = DEATH_MESSAGES[Math.floor(Math.random() * DEATH_MESSAGES.length)];
+    for (let i = 0; i < 28; i++) {
+      gibs.push({
+        x: x + 10 + Math.random() * 24, y: y - 10 - Math.random() * 36,
+        vx: Math.random() * 240 - 120, vy: -60 - Math.random() * 200,
+        size: 2 + Math.floor(Math.random() * 2),
+        color: GIB_COLORS[Math.floor(Math.random() * GIB_COLORS.length)], born: now,
+      });
+    }
+  }
+
+  function respawn(rect, now) {
+    deadUntil = 0;
+    hp = MAX_HP;
+    x = Math.random() * Math.max(0, rect.width - FW - 8);
+    y = vx = vy = 0;
+    blinkUntil = now + 800;
+    pauseUntil = now + 600;
+  }
+
+  function drawSprite(left, bottom, facing, f) {
     const ox = Math.round(left * dpr);
     const oy = Math.round(bottom * dpr) - FEET * px;
 
@@ -809,6 +902,97 @@ document.addEventListener('keydown', function(event) {
     ctx.restore();
   }
 
+  function outlinedText(text, cx, cy, size, color) {
+    ctx.font = size + 'px VT323, monospace';
+    ctx.textAlign = 'center';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#1A1014';
+    ctx.strokeText(text, cx, cy);
+    ctx.fillStyle = color;
+    ctx.fillText(text, cx, cy);
+  }
+
+  // A pixelated streak: the front shoots across, then the tail catches up and
+  // it fades. Tapered at both ends with a slight curve and a bright core.
+  function drawSlash(s, baseX, baseY, age) {
+    const head = Math.min(1, age / 0.08);
+    const tail = Math.min(1, Math.max(0, (age - 0.05) / 0.15));
+    if (head <= tail) return;
+
+    const points = [];
+    for (let t = tail; t <= head; t += 1 / s.len) {
+      const along = (t - 0.5) * s.len, bow = Math.sin(Math.PI * t) * s.bow;
+      points.push({
+        x: Math.round((baseX + s.x + s.dx * along - s.dy * bow) / 2) * 2,
+        y: Math.round((baseY + s.y + s.dy * along + s.dx * bow) / 2) * 2,
+        w: Math.max(2, Math.round(s.width * Math.sin(Math.PI * t) / 2) * 2),
+      });
+    }
+
+    ctx.globalAlpha = age < 0.2 ? 1 : 1 - (age - 0.2) / 0.1;
+    // Dark red edge, red body, then a near-white core on top
+    [['#9E0D17', 2], ['#FF3B3B', 0], ['#FFE3E3', -0.4]].forEach(([color, grow]) => {
+      ctx.fillStyle = color;
+      points.forEach((p) => {
+        const size = grow < 0 ? Math.max(2, Math.round(p.w * -grow / 2) * 2) : p.w + grow;
+        ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
+      });
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  // Health bar, damage numbers, gibs and the death message (CSS pixel space)
+  function drawOverlay(rect, now) {
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const baseX = rect.left + 4, baseY = rect.top + 1;
+
+    if (!deadUntil && hp < MAX_HP && now - lastHitAt < 3000) {
+      const bx = Math.round(baseX + x + 7), by = Math.round(baseY + y - 58);
+      const ratio = hp / MAX_HP;
+      ctx.fillStyle = '#1A1014';
+      ctx.fillRect(bx - 1, by - 1, 32, 6);
+      ctx.fillStyle = '#5A1A1A';
+      ctx.fillRect(bx, by, 30, 4);
+      ctx.fillStyle = ratio > 0.5 ? '#4CC24C' : ratio > 0.25 ? '#E0C030' : '#E03030';
+      ctx.fillRect(bx, by, Math.ceil(30 * ratio), 4);
+    }
+
+    for (let i = slashes.length - 1; i >= 0; i--) {
+      const s = slashes[i], age = Math.max(0, now - s.born) / 1000;
+      if (age > 0.3) { slashes.splice(i, 1); continue; }
+      drawSlash(s, baseX, baseY, age);
+    }
+
+    for (let i = texts.length - 1; i >= 0; i--) {
+      const t = texts[i], age = Math.max(0, now - t.born) / 1000;
+      if (age > 1) { texts.splice(i, 1); continue; }
+      // Pops up fast, then slows down and fades, like Terraria combat text
+      const rise = 40 * (1 - Math.pow(1 - Math.min(age / 0.7, 1), 2));
+      ctx.globalAlpha = age < 0.6 ? 1 : 1 - (age - 0.6) / 0.4;
+      outlinedText(t.text, baseX + t.x, baseY + t.y - rise, t.crit ? 26 : 20, t.crit ? '#FF8C1A' : '#FF5050');
+    }
+    ctx.globalAlpha = 1;
+
+    for (let i = gibs.length - 1; i >= 0; i--) {
+      const g = gibs[i], age = Math.max(0, now - g.born) / 1000;
+      if (age > 1.4) { gibs.splice(i, 1); continue; }
+      ctx.globalAlpha = age < 1 ? 1 : 1 - (age - 1) / 0.4;
+      ctx.fillStyle = g.color;
+      ctx.fillRect(Math.round(baseX + g.x), Math.round(baseY + g.y), g.size, g.size);
+    }
+    ctx.globalAlpha = 1;
+
+    if (deadUntil) {
+      const cx = rect.left + rect.width / 2;
+      const secs = Math.max(1, Math.ceil((deadUntil - now) / 1000));
+      outlinedText(deathMessage, cx, rect.top - 24, 20, '#E6463C');
+      outlinedText('Respawning in ' + secs + '...', cx, rect.top - 6, 18, '#F1EFDC');
+    }
+    ctx.restore();
+  }
+
   function frame(time) {
     const dt = last ? Math.min((time - last) / 1000, 0.1) : 0;
     last = time;
@@ -816,37 +1000,50 @@ document.addEventListener('keydown', function(event) {
 
     const rect = photo.getBoundingClientRect();
     const range = Math.max(0, rect.width - FW * SCALE - 8);
+
+    if (deadUntil && time >= deadUntil) respawn(rect, time);
+
+    // Gibs fly out and fall
+    gibs.forEach((g) => { g.vy += GRAVITY * dt; g.x += g.vx * dt; g.y += g.vy * dt; });
+
     let walking = false;
-
-    if (!reduceMotion && time >= pauseUntil) {
-      walking = true;
-      x += dir * SPEED * dt;
-      if ((x <= 0 && dir < 0) || (x >= range && dir > 0)) {
-        // Reached an edge: stop for a moment, then turn around
-        x = Math.min(Math.max(x, 0), range);
-        dir = -dir;
-        pauseUntil = time + 1200 + Math.random() * 2000;
-      } else if (Math.random() < dt * 0.15) {
-        // Occasionally stop mid-walk to look around
-        pauseUntil = time + 800 + Math.random() * 1500;
-        if (Math.random() < 0.4) dir = -dir;
+    if (!deadUntil) {
+      if (inAir() || vx) {
+        // Knockback: fly back with gravity until landing on the photo
+        vy += GRAVITY * dt;
+        y = Math.min(0, y + vy * dt);
+        x = Math.min(Math.max(x + vx * dt, 0), range);
+        if (y === 0 && vy > 0) { vy = 0; vx = 0; }
+      } else if (!reduceMotion && time >= pauseUntil) {
+        walking = true;
+        x += dir * SPEED * dt;
+        if ((x <= 0 && dir < 0) || (x >= range && dir > 0)) {
+          // Reached an edge: stop for a moment, then turn around
+          x = Math.min(Math.max(x, 0), range);
+          dir = -dir;
+          pauseUntil = time + 1200 + Math.random() * 2000;
+        } else if (Math.random() < dt * 0.15) {
+          // Occasionally stop mid-walk to look around
+          pauseUntil = time + 800 + Math.random() * 1500;
+          if (Math.random() < 0.4) dir = -dir;
+        }
       }
-    }
-    x = Math.min(x, range);
+      x = Math.min(x, range);
 
-    const left = rect.left + 4 + x;
-    if (mouseX === null) {
-      facing = dir;
-    } else {
-      // Small dead zone so it doesn't flicker when the cursor is right above it
-      const offset = mouseX - (left + FW * SCALE / 2);
-      if (Math.abs(offset) > 4) facing = offset > 0 ? 1 : -1;
+      // Slowly heal back up after a few seconds without being hit
+      if (hp < MAX_HP && time - lastHitAt > 4000) hp = Math.min(MAX_HP, hp + 25 * dt);
     }
 
-    // Feet rest on the photo's border, only while it's on screen
-    if (sheet.complete && sheet.naturalWidth && rect.bottom > 0 && rect.top < window.innerHeight && rect.width > 0) {
-      drawSprite(left, rect.top + 1, facing, walking, time);
+    const onScreen = rect.bottom > 0 && rect.top < window.innerHeight && rect.width > 0;
+    if (!deadUntil && sheet.complete && sheet.naturalWidth && onScreen) {
+      // Blink while hurt, like Terraria's immunity frames
+      const hidden = time < blinkUntil && Math.floor(time / 70) % 2 === 1;
+      const f = inAir() ? JUMP : walking ? WALK[Math.floor(time / FRAME_MS) % WALK.length] : STAND;
+      if (!hidden) drawSprite(rect.left + 4 + x, rect.top + 1 + y, dir, f);
     }
+    if (onScreen) drawOverlay(rect, time);
+
+    updateCursor();
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
