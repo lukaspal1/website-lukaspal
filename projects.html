@@ -109,9 +109,10 @@
             <a href="https://github.com/lukaspal1/motion-capture-media" target="_blank" class="entry-link">GitHub</a>
           </div>
           <ul class="entry-details">
-            <li>Built a real-time webcam motion-capture app in <strong>Python</strong> using <strong>MediaPipe</strong> and <strong>OpenCV</strong>, running hand, body pose, and face tracking together on every frame.</li>
-            <li>Recognized finger counts from <strong>3D hand landmarks</strong> using joint angles, so gestures work whether the palm faces the camera or is turned sideways, with frame smoothing to remove flicker.</li>
-            <li>Controls music in any app (Spotify, YouTube) through the <strong>Windows media session API</strong>: fist pauses, 1 plays, 2 skips, 3 goes back. Gestures only count while the arm is held out, need a short hold, and have a cooldown to prevent accidental triggers.</li>
+            <li>Built a real-time webcam app in <strong>Python</strong> that controls music with hand gestures, using <strong>MediaPipe</strong> hand and body pose tracking with an <strong>OpenCV</strong> live overlay.</li>
+            <li>Detects which fingers are raised from <strong>3D hand landmarks</strong> using joint angles, so it works whether the palm faces the camera or is turned sideways, and smooths the count over several frames to remove flicker.</li>
+            <li>Sends play, pause, next, and previous to any app (Spotify, YouTube in a browser) through the <strong>Windows media session API</strong>: fist pauses, 1 finger plays, 2 skips, 3 goes back.</li>
+            <li>Prevents accidental triggers: a gesture only counts while that arm is held <strong>out to the side</strong> (checked with body pose), must be held for half a second, and is followed by a 4-second cooldown.</li>
           </ul>
         </article>
         <article class="entry project-entry">
