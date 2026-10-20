@@ -810,26 +810,34 @@ document.addEventListener('keydown', function(event) {
 
   const inAir = () => y < 0 || vy < 0;
 
-  // Character hitbox in viewport coordinates
-  function isOver(cx, cy) {
+  // Character hitbox in viewport coordinates. Fingers are imprecise, so touch
+  // taps get a bigger box that also reaches a little way down onto the photo.
+  const coarse = window.matchMedia('(pointer: coarse)');
+  function isOver(cx, cy, touch = coarse.matches) {
     if (deadUntil || !sheet.complete) return false;
     const rect = photo.getBoundingClientRect();
     const left = rect.left + 4 + x;
     const feet = rect.top + 1 + y;
-    return cx >= left + 5 && cx <= left + FW - 5 && cy >= feet - 50 && cy <= feet;
+    const pad = touch ? 10 : 0, below = touch ? 16 : 0;
+    return cx >= left + 5 - pad && cx <= left + FW - 5 + pad &&
+           cy >= feet - 50 - pad && cy <= feet + below;
   }
 
   // Sword cursor only while hovering the character. Also re-checked every
   // frame, since the character walks under a still cursor.
   const updateCursor = () => {
-    document.documentElement.classList.toggle('sword-cursor', !!mouse && isOver(mouse.x, mouse.y));
+    document.documentElement.classList.toggle('sword-cursor', !!mouse && isOver(mouse.x, mouse.y, false));
   };
   window.addEventListener('mousemove', (e) => { mouse = { x: e.clientX, y: e.clientY }; updateCursor(); });
   document.addEventListener('mouseleave', () => { mouse = null; updateCursor(); });
 
+  // Remember whether the last press was a finger, for the click that follows
+  let touchPress = false;
+  window.addEventListener('pointerdown', (e) => { touchPress = e.pointerType === 'touch' || e.pointerType === 'pen'; }, true);
+
   // Capture phase so the hit doesn't also click the photo or a link underneath
   window.addEventListener('click', (e) => {
-    if (!isOver(e.clientX, e.clientY)) return;
+    if (!isOver(e.clientX, e.clientY, touchPress || coarse.matches)) return;
     e.preventDefault();
     e.stopPropagation();
     hit(e.clientX, last);
@@ -838,7 +846,7 @@ document.addEventListener('keydown', function(event) {
   function hit(clickX, now) {
     const rect = photo.getBoundingClientRect();
     const crit = Math.random() < 0.15;
-    const dmg = (10 + Math.floor(Math.random() * 8)) * (crit ? 2 : 1);
+    const dmg = (18 + Math.floor(Math.random() * 12)) * (crit ? 2 : 1);
     hp = Math.max(0, hp - dmg);
     lastHitAt = now;
     blinkUntil = now + 500;

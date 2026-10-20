@@ -426,11 +426,15 @@ body{
 
 }
 
-.profile-image:hover {
-    transform: scale(1.03) rotate(-2deg);
-    box-shadow: 
-        0 0 50px rgba(45, 106, 79, 0.4),
-        inset 0 0 30px rgba(0, 0, 0, 0.1);
+/* Only on real hover devices: on touch the hover sticks after a tap, and the
+   tilted photo pokes up into the character walking on top of it */
+@media (hover: hover) {
+  .profile-image:hover {
+      transform: scale(1.03) rotate(-2deg);
+      box-shadow:
+          0 0 50px rgba(45, 106, 79, 0.4),
+          inset 0 0 30px rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* Pixel-style decorative frame option (adds that retro feel) */
