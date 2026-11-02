@@ -1093,6 +1093,21 @@ body.night-mode .spotify-label{
   font-size:12px;
   color:var(--bark-light);
 }
+/* small text-only line for the previous book */
+.book-prev{
+  display:flex;
+  flex-direction:column;
+  margin-top:10px;
+  padding-top:8px;
+  border-top:2px dashed var(--sage);
+}
+.book-prev .book-label{
+  margin-bottom:4px;
+}
+.book-prev-title{
+  font-size:12px;
+  line-height:1.1;
+}
 body.night-mode .book-label{
   color:var(--amber);
 }
